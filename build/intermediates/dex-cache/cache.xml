@@ -2,11 +2,11 @@
 <items version="2" >
 
     <item
-        jar="/home/azureskybox/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.1/support-annotations-22.2.1.jar"
+        jar="/home/azureskybox/MyProjects/MemorizeNote_Client/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars/classes.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
-        <dex dex="/home/azureskybox/AndroidStudioProjects/MemorizeNote/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.1-3f941fe0a661f4319cc9ddaf08c9fe876a2f03de.jar" />
+        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
+        <dex dex="/home/azureskybox/MyProjects/MemorizeNote_Client/app/build/intermediates/pre-dexed/debug/classes-3a984045a62762c90f24e067b43d402d4668d809.jar" />
     </item>
     <item
         jar="/home/azureskybox/AndroidStudioProjects/MemorizeNote/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars/classes.jar"
@@ -16,11 +16,11 @@
         <dex dex="/home/azureskybox/AndroidStudioProjects/MemorizeNote/app/build/intermediates/pre-dexed/debug/classes-d040ec7b1b2725dd97d8b6d796c921bed8c98d0d.jar" />
     </item>
     <item
-        jar="/home/azureskybox/AndroidStudioProjects/MemorizeNote/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/libs/internal_impl-22.2.1.jar"
+        jar="/home/azureskybox/MyProjects/MemorizeNote_Client/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/libs/internal_impl-22.2.1.jar"
         jumboMode="false"
         revision="22.0.1"
         sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
-        <dex dex="/home/azureskybox/AndroidStudioProjects/MemorizeNote/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.1-0a5dde33ecbced73f9ecb95b14f1d116ae17a637.jar" />
+        <dex dex="/home/azureskybox/MyProjects/MemorizeNote_Client/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.1-4ebacf49fc0285990777d340a252129a585a7e96.jar" />
     </item>
     <item
         jar="/home/azureskybox/AndroidStudioProjects/MemorizeNote/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/classes.jar"
@@ -28,6 +28,27 @@
         revision="22.0.1"
         sha1="f8efd0096475e0daf054267b61544e10dc776503">
         <dex dex="/home/azureskybox/AndroidStudioProjects/MemorizeNote/app/build/intermediates/pre-dexed/debug/classes-4a1824716892cbaa1a4270ada11eaa1bea8f780c.jar" />
+    </item>
+    <item
+        jar="/home/azureskybox/AndroidStudioProjects/MemorizeNote/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/libs/internal_impl-22.2.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
+        <dex dex="/home/azureskybox/AndroidStudioProjects/MemorizeNote/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.1-0a5dde33ecbced73f9ecb95b14f1d116ae17a637.jar" />
+    </item>
+    <item
+        jar="/home/azureskybox/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.1/support-annotations-22.2.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
+        <dex dex="/home/azureskybox/AndroidStudioProjects/MemorizeNote/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.1-3f941fe0a661f4319cc9ddaf08c9fe876a2f03de.jar" />
+    </item>
+    <item
+        jar="/home/azureskybox/MyProjects/MemorizeNote_Client/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f8efd0096475e0daf054267b61544e10dc776503">
+        <dex dex="/home/azureskybox/MyProjects/MemorizeNote_Client/app/build/intermediates/pre-dexed/debug/classes-457d9f0ac99bbd170e0f8a6f35ad031c214a5fc0.jar" />
     </item>
 
 </items>

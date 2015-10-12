@@ -1,5 +1,7 @@
 package com.asb.memorizenote.reader;
 
+import android.content.Context;
+
 import com.asb.memorizenote.Constants;
 
 /**
@@ -7,10 +9,10 @@ import com.asb.memorizenote.Constants;
  */
 public class ReaderFactory {
 
-    public static AbstractReader createReader(int readerType) {
+    public static AbstractReader createReader(Context context, int readerType) {
         switch(readerType) {
             case Constants.ReaderType.FILE:
-                return new FileReader();
+                return new DataFileReader(context);
             case Constants.ReaderType.HTTP:
                 break;
         }

@@ -5,8 +5,7 @@ package com.asb.memorizenote.data;
  */
 public abstract class AbstractData {
     public String mName;
-    public String mPlayer;
-
-    public abstract boolean generateDataFromFileString(String rawString);
-    public abstract boolean generateDataFromJSONString(String rawString);
+    public int mNameId;
+    public int mDataSetCnt;
+    public int mDataType;
 }
