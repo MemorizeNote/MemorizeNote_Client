@@ -30,6 +30,16 @@ public class Constants {
                 return NONE;
         }
 
+        public static boolean isValidType(int dataType) {
+            switch(dataType) {
+                case SIMPLE_VOCA:
+                case NAME_LIST_DATA:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public static AbstractAdapter getAdpter(Context context, int type) {
             switch(type) {
                 case SIMPLE_VOCA:
@@ -79,4 +89,21 @@ public class Constants {
         }
     }
 
+    public static class HandlerFlags {
+        public static final int SHOW_PROGRESS = 0;
+        public static final int HIDE_PROGRESS = SHOW_PROGRESS+1;
+
+        public static class BaseActivity {
+            public static final int UPDATE_LIST = 10;
+        }
+    }
+
+    public static class IntentFlags {
+
+        public static final class BasePlayer {
+            public static final String DATA_TYPE = "data_type";
+            public static final String START_CHAPTER = "start_chapter";
+            public static final String END_CHAPTER = "end_chapter";
+        }
+    }
 }
