@@ -1,4 +1,4 @@
-package com.asb.memorizenote.reader;
+package com.asb.memorizenote.data.reader;
 
 import android.content.Context;
 import android.util.Log;
@@ -46,14 +46,16 @@ public class DataFileReader extends AbstractReader {
 
     @Override
     public void readAll() {
+        boolean sendHeader = false;
+        String dataName = null;
+        int dataType = Constants.DataType.NONE;
+
         for(File dataFile : mDataFileList) {
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(dataFile));
 
                 ArrayList<String> dataList = new ArrayList<String>();
                 String rawData = null;
-                String dataName = null;
-                int dataType = Constants.DataType.NONE;
                 while((rawData = reader.readLine()) != null) {
                     Log.d("MN", rawData);
 
@@ -69,25 +71,28 @@ public class DataFileReader extends AbstractReader {
                         }
                     }
                     else {
-                        dataList.add(rawData);
+                        if(!sendHeader) {
+                            sendHeader = true;
+                            mListener.onItemSetChanged(dataName, dataType, 0);
+                        }
+
+                        String[] splitted = rawData.split(";");
+
+                        RawData convertedRawData = new RawData();
+                        convertedRawData.mRawData01 = splitted[0];
+                        convertedRawData.mRawData02 = splitted[1];
+
+                        mListener.onItem(convertedRawData);
                     }
                 }
 
-                Log.d("MN", dataName+","+dataType);
-
-                AbstractAdapter adapter = Constants.DataType.getAdpter(mContext, dataType);
-                adapter.setDataName(dataName);
-                adapter.setDataType(dataType);
-                adapter.readDataListFromFile(dataList);
-
-                mListener.onReadCompleted(adapter);
+                sendHeader = false;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        mListener.onReadCompleted(null);
+        mListener.onCompleted();
     }
 }

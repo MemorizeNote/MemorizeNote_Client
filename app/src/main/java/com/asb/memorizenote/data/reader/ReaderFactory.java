@@ -1,4 +1,4 @@
-package com.asb.memorizenote.reader;
+package com.asb.memorizenote.data.reader;
 
 import android.content.Context;
 

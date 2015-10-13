@@ -54,14 +54,24 @@ public class Constants {
         public static final int NONE = -1;
         public static final int FILE = 0;
         public static final int HTTP = 1;
+        public static final int DB = 2;
+    }
+
+    public static class ReaderFlags {
+        public static final int NONE = -1;
+
+        public static class DB {
+            public static final int TARGET_BOOK = 0;
+            public static final int TARGET_ITEM = 1;
+        }
     }
 
     public static class DB {
         public static final int VERSION = 1;
         public static final String NAME = "memorizedb";
 
-        public static class NAME_TABLE {
-            public static final String NAME = "memorize_name";
+        public static class BOOK_TABLE {
+            public static final String NAME = "memorize_books";
 
             public static final String KEY_ID = "_id";
             public static final String KEY_NAME = "name";
@@ -69,13 +79,13 @@ public class Constants {
             public static final String KEY_TYPE = "type";
         }
 
-        public static class DATA_TABLE {
-            public static final String NAME = "memorize_data";
+        public static class ITEM_TABLE {
+            public static final String NAME = "memorize_items";
 
             public static final String KEY_ID = "_id";
-            public static final String KEY_NAME_KEY = "name_key";
-            public static final String KEY_INDEX = "idx";
-            public static final String KEY_DATA_SET_INDEX = "data_set_index";
+            public static final String KEY_BOOK_KEY = "book_key";
+            public static final String KEY_INDEX_IN_CHAPTER = "index_in_chapter";
+            public static final String KEY_CHAPTER = "chapter";
             public static final String KEY_DATA_01 = "data_01";
             public static final String KEY_DATA_02 = "data_02";
             public static final String KEY_DATA_03 = "data_03";

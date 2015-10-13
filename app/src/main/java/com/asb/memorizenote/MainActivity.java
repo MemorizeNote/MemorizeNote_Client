@@ -1,6 +1,5 @@
 package com.asb.memorizenote;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
@@ -14,16 +13,17 @@ import android.widget.ListView;
 import com.asb.memorizenote.Constants.*;
 import com.asb.memorizenote.data.AbstractData;
 import com.asb.memorizenote.data.apater.AbstractAdapter;
+import com.asb.memorizenote.data.apater.DataUpdateAdapter;
 import com.asb.memorizenote.data.apater.NameListAdapter;
+import com.asb.memorizenote.data.reader.DBReader;
+import com.asb.memorizenote.data.reader.DataFileReader;
 import com.asb.memorizenote.player.BasePlayerActivity;
-import com.asb.memorizenote.reader.AbstractReader;
-import com.asb.memorizenote.reader.ReaderFactory;
 import com.asb.memorizenote.ui.BaseActivity;
 
 import java.io.File;
 
 
-public class MainActivity extends BaseActivity implements AbstractReader.OnDataReadListener, ListView.OnItemClickListener {
+public class MainActivity extends BaseActivity implements ListView.OnItemClickListener {
 
     boolean mIsUpdating = false;
 
@@ -40,18 +40,24 @@ public class MainActivity extends BaseActivity implements AbstractReader.OnDataR
         if(!dataDir.exists())
             dataDir.mkdir();
 
+        DBReader reader = new DBReader(getApplicationContext(), ReaderFlags.DB.TARGET_BOOK);
+
         mMainListAdapter = new NameListAdapter(getApplicationContext());
-        mMainListAdapter.readDataListFromDB();
+        mMainListAdapter.setListener(new AbstractAdapter.OnDataLoadListener() {
+            @Override
+            public void onCompleted() {
+                Log.e("MN", "onCompleted");
 
-        Log.d("MN", ""+mMainListAdapter.getCount());
+                if(mMainListAdapter.getCount() > 0) {
+                    mMainListAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+        mMainListAdapter.readItems(reader);
 
-        if(mMainListAdapter.getCount() > 0) {
-            mMainList = (ListView) findViewById(R.id.main_name_list);
-            mMainList.setAdapter(mMainListAdapter);
-            mMainList.setOnItemClickListener(this);
-
-            mMainListAdapter.notifyDataSetChanged();
-        }
+        mMainList = (ListView) findViewById(R.id.main_name_list);
+        mMainList.setAdapter(mMainListAdapter);
+        mMainList.setOnItemClickListener(this);
     }
 
     @Override
@@ -69,12 +75,18 @@ public class MainActivity extends BaseActivity implements AbstractReader.OnDataR
                 break;
             case R.id.action_update_data:
                 mIsUpdating = true;
-
                 showProgress("Updating...");
 
-                AbstractReader reader = ReaderFactory.createReader(getApplicationContext(), Constants.ReaderType.FILE);
-                reader.init(this);
-                reader.startReadinInThread();
+                DataFileReader reader = new DataFileReader(getApplicationContext());
+
+                DataUpdateAdapter updateAdpater = new DataUpdateAdapter(getApplicationContext());
+                updateAdpater.setListener(new AbstractAdapter.OnDataLoadListener() {
+                    @Override
+                    public void onCompleted() {
+                        mHandler.sendEmptyMessage(HandlerFlags.MainActivity.UPDATE_LIST);
+                    }
+                });
+                updateAdpater.readItems(reader);
                 break;
         }
 
@@ -84,33 +96,22 @@ public class MainActivity extends BaseActivity implements AbstractReader.OnDataR
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         AbstractData nameData = (AbstractData)mMainListAdapter.getItem(position);
-        Intent playerLaunchIntent = BasePlayerActivity.getLaunchingIntent(this, nameData.mDataType, 0, nameData.mDataSetCnt);
+        Intent playerLaunchIntent = BasePlayerActivity.getLaunchingIntent(this, nameData.mDataType, 0, nameData.mChapterNum);
 
         startActivity(playerLaunchIntent);
     }
 
     @Override
     protected void onHandleExtraMessage(Message msg) {
+        Log.e("MN", "onHandleExtraMessage");
+
         switch (msg.what) {
             case HandlerFlags.MainActivity.UPDATE_LIST:
-                mMainListAdapter.readDataListFromDB();
-                mMainListAdapter.notifyDataSetChanged();
                 hideProgress();
+
+                DBReader reader = new DBReader(getApplicationContext(), ReaderFlags.DB.TARGET_BOOK);
+                mMainListAdapter.readItems(reader);
                 break;
         }
     }
-
-    @Override
-    public void onReadCompleted(AbstractAdapter adapter) {
-        if(mIsUpdating) {
-            if(adapter != null) {
-                adapter.writeDataListToDB();
-            } else {
-                mIsUpdating = false;
-                mHandler.sendEmptyMessage(HandlerFlags.MainActivity.UPDATE_LIST);
-            }
-        }
-    }
-
-
 }

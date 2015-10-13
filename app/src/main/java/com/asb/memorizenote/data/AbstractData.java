@@ -5,7 +5,7 @@ package com.asb.memorizenote.data;
  */
 public abstract class AbstractData {
     public String mName;
-    public int mNameId;
-    public int mDataSetCnt;
+    public int mBookId;
+    public int mChapterNum;
     public int mDataType;
 }

@@ -8,8 +8,9 @@ import android.widget.TextView;
 
 import com.asb.memorizenote.R;
 import com.asb.memorizenote.data.NameListData;
-
-import org.json.JSONObject;
+import com.asb.memorizenote.data.reader.AbstractReader;
+import com.asb.memorizenote.data.reader.RawData;
+import com.asb.memorizenote.data.writer.AbstractWriter;
 
 import java.util.ArrayList;
 
@@ -21,11 +22,9 @@ public class NameListAdapter extends AbstractAdapter {
         super(context);
     }
 
-    @Override
-    public void readDataListFromDB() {
+    public void readItems(AbstractReader reader) {
         mDataList.clear();
-
-        mDBHelper.getDataNameList(mDataList);
+        super.readItems(reader);
     }
 
     @Override
@@ -35,18 +34,39 @@ public class NameListAdapter extends AbstractAdapter {
             convertView = inflater.inflate(R.layout.main_name_list_item, null, false);
         }
 
-        ((TextView)convertView.findViewById(R.id.name_list_name)).setText(((NameListData)mDataList.get(position)).mName);
-        ((TextView)convertView.findViewById(R.id.name_list_count)).setText(""+(((NameListData)mDataList.get(position)).mDataSetCnt+1));
+        ((TextView)convertView.findViewById(R.id.name_list_name)).setText(((NameListData) mDataList.get(position)).mName);
+        ((TextView)convertView.findViewById(R.id.name_list_count)).setText("" + (((NameListData) mDataList.get(position)).mChapterNum + 1));
 
         return convertView;
     }
 
     @Override
-    public void readDataListFromFile(ArrayList<String> rawString) {}
+    public void onItemSetChanged(String itemSetName, int itemSetType, int itemNum) {
+
+    }
 
     @Override
-    public void readDataListFromJSON(ArrayList<JSONObject> rawJSON) {}
+    public void onItem(RawData data) {
+
+    }
 
     @Override
-    public void writeDataListToDB() {}
+    public void onItemList(ArrayList<RawData> dataList) {
+        for(RawData data : dataList) {
+            NameListData convertedData = new NameListData();
+            convertedData.mName = (String)data.mRawData01;
+            convertedData.mChapterNum = (int)data.mRawData02;
+            convertedData.mDataType = (int)data.mRawData03;
+            convertedData.mBookId = (int)data.mRawData04;
+            mDataList.add(convertedData);
+        }
+    }
+
+    @Override
+    public void onCompleted() {
+        if(mListener == null)
+            return;
+
+        mListener.onCompleted();
+    }
 }

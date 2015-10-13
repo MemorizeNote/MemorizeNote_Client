@@ -1,22 +1,26 @@
 package com.asb.memorizenote.data.apater;
 
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.asb.memorizenote.Constants;
 import com.asb.memorizenote.data.AbstractData;
-import com.asb.memorizenote.db.MemorizeDBHelper;
-
-import org.json.JSONObject;
+import com.asb.memorizenote.data.db.MemorizeDBHelper;
+import com.asb.memorizenote.data.reader.AbstractReader;
+import com.asb.memorizenote.data.reader.RawData;
+import com.asb.memorizenote.data.writer.AbstractWriter;
 
 import java.util.ArrayList;
 
 /**
  * Created by azureskybox on 15. 10. 12.
  */
-public abstract class AbstractAdapter extends BaseAdapter {
+public abstract class AbstractAdapter extends BaseAdapter implements AbstractReader.OnDataReadListener {
     protected Context mContext;
-    protected MemorizeDBHelper mDBHelper;
+
+    protected OnDataLoadListener mListener;
 
     protected ArrayList<AbstractData> mDataList;
     protected int mDataType;
@@ -28,14 +32,16 @@ public abstract class AbstractAdapter extends BaseAdapter {
         mContext = context;
         mDataList = new ArrayList<AbstractData>();
         mDataType = Constants.DataType.NONE;
-        mDBHelper = new MemorizeDBHelper(mContext);
+    }
+
+    public void setListener(OnDataLoadListener listener) {
+        mListener = listener;
     }
 
     @Override
     public int getCount() {
         return mDataList.size();
     }
-
     @Override
     public Object getItem(int position) {
         if(mDataList.size() == 0)
@@ -43,10 +49,14 @@ public abstract class AbstractAdapter extends BaseAdapter {
         else
             return mDataList.get(position);
     }
-
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        return null;
     }
 
     public int getDataType() {
@@ -81,9 +91,16 @@ public abstract class AbstractAdapter extends BaseAdapter {
         return mDataList;
     }
 
-    abstract public void readDataListFromFile(ArrayList<String> rawString);
-    abstract public void readDataListFromJSON(ArrayList<JSONObject> rawJSON);
+    public void readItems(AbstractReader reader) {
+        reader.init(this);
+        reader.readAll();
+    }
 
-    abstract public void readDataListFromDB();
-    abstract public void writeDataListToDB();
+    public void writeItems(AbstractWriter writer) {
+
+    }
+
+    public interface OnDataLoadListener {
+        void onCompleted();
+    }
 }

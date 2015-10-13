@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.asb.memorizenote.Constants.*;
@@ -20,6 +21,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            Log.e("MN", "handleMessage");
             switch(msg.what) {
                 case HandlerFlags.SHOW_PROGRESS:
                     mProgressDlg.setMessage((String)msg.obj);
