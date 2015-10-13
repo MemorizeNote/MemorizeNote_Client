@@ -40,7 +40,7 @@ public class DataUpdateAdapter extends AbstractAdapter {
     @Override
     public void onItem(RawData data) {
         ContentValues values = new ContentValues();
-        values.put(DB.ITEM_TABLE.KEY_BOOK_KEY, 0);
+        values.put(DB.ITEM_TABLE.KEY_BOOK_NAME, mInfo.mBookName);
         values.put(DB.ITEM_TABLE.KEY_CHAPTER, mInfo.mBookTotalChapter);
         values.put(DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER, mCurrentItemIndex);
 

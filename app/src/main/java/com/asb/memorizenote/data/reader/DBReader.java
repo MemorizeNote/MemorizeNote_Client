@@ -28,7 +28,10 @@ public class DBReader extends AbstractReader {
             return;
 
         if(mReadTarget == ReaderFlags.DB.TARGET_ITEM) {
+            ArrayList<RawData> dataList = new ArrayList<RawData>();
+            mDBHelper.getItemList(dataList, mTargetBooksName, mStartChapter, mLastChpter);
 
+            mListener.onItemList(dataList);
         }
         else {
             ArrayList<RawData> dataList = new ArrayList<RawData>();

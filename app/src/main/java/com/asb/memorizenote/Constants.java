@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.asb.memorizenote.data.apater.AbstractAdapter;
-import com.asb.memorizenote.data.apater.SimpleVocaAdapter;
+import com.asb.memorizenote.player.adapter.SimpleVocaAdapter;
 
 /**
  * Created by azureskybox on 15. 10. 12.
@@ -83,7 +83,7 @@ public class Constants {
             public static final String NAME = "memorize_items";
 
             public static final String KEY_ID = "_id";
-            public static final String KEY_BOOK_KEY = "book_key";
+            public static final String KEY_BOOK_NAME = "book_name";
             public static final String KEY_INDEX_IN_CHAPTER = "index_in_chapter";
             public static final String KEY_CHAPTER = "chapter";
             public static final String KEY_DATA_01 = "data_01";
@@ -112,6 +112,7 @@ public class Constants {
 
         public static final class BasePlayer {
             public static final String DATA_TYPE = "data_type";
+            public static final String BOOK_NAME = "book_name";
             public static final String START_CHAPTER = "start_chapter";
             public static final String END_CHAPTER = "end_chapter";
         }

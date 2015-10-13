@@ -41,7 +41,7 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
                 + DB.ITEM_TABLE.KEY_ID + " INTEGER PRIMARY KEY, "
                 + DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER + " INTEGER, "
                 + DB.ITEM_TABLE.KEY_CHAPTER + " INTEGER, "
-                + DB.ITEM_TABLE.KEY_BOOK_KEY + " INTEGER,"
+                + DB.ITEM_TABLE.KEY_BOOK_NAME + " TEXT,"
                 + DB.ITEM_TABLE.KEY_DATA_01 + " TEXT, "
                 + DB.ITEM_TABLE.KEY_DATA_02 + " TEXT, "
                 + DB.ITEM_TABLE.KEY_DATA_03 + " TEXT, "
@@ -123,7 +123,31 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public boolean getItemList() {
-        return true;
+    public void getItemList(ArrayList<RawData> dataList, String bookame, int first, int last) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(ITEM_TABLE, null,
+                DB.ITEM_TABLE.KEY_BOOK_NAME + "=?", new String[]{bookame},
+                null, null,
+                DB.ITEM_TABLE.KEY_CHAPTER+" ASC",
+                null);
+        if(cursor.moveToFirst()) {
+            do {
+                RawData data = new RawData();
+                data.mRawData01 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_NAME));
+                data.mRawData02 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER));
+                data.mRawData03 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER));
+                data.mRawData04 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_01));
+                data.mRawData05 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_02));
+                data.mRawData06 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_03));
+                data.mRawData07 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_04));
+                data.mRawData08 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_05));
+                data.mRawData09 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_06));
+                data.mRawData10 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_07));
+                data.mRawData11 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_08));
+                data.mRawData12 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_09));
+                data.mRawData13 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_10));
+                dataList.add(data);
+            } while (cursor.moveToNext());
+        }
     }
 }

@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".player.TestPlayerActivity"
+            android:name=".player.SimpleVocaPlayerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 

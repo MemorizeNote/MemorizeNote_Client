@@ -14,4 +14,10 @@ public class RawData {
     public Object mRawData08;
     public Object mRawData09;
     public Object mRawData10;
+    public Object mRawData11;
+    public Object mRawData12;
+    public Object mRawData13;
+    public Object mRawData14;
+    public Object mRawData15;
+
 }

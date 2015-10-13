@@ -25,6 +25,7 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
     protected int mDataType = DataType.NONE;
+    protected String mBookName = null;
     protected int mStartChapter = 0;
     protected int mEndChapter = 0;
 
@@ -37,15 +38,16 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     private boolean mTouchStartOnChapter;
     private boolean mTouchStartOnContent;
 
-    public static Intent getLaunchingIntent(Context context, int dataType, int startChapter, int endChapter) {
+    public static Intent getLaunchingIntent(Context context, String bookName, int dataType, int startChapter, int endChapter) {
         Intent intent = new Intent();
         intent.putExtra(IntentFlags.BasePlayer.DATA_TYPE, dataType);
+        intent.putExtra(IntentFlags.BasePlayer.BOOK_NAME, bookName);
         intent.putExtra(IntentFlags.BasePlayer.START_CHAPTER, startChapter);
         intent.putExtra(IntentFlags.BasePlayer.END_CHAPTER, endChapter);
 
         switch(dataType) {
             case DataType.SIMPLE_VOCA:
-                intent.setClass(context, TestPlayerActivity.class);
+                intent.setClass(context, SimpleVocaPlayerActivity.class);
                 return intent;
             default:
                 return null;
@@ -64,6 +66,7 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
             finish();
         }
 
+        mBookName = launchIntent.getStringExtra(IntentFlags.BasePlayer.BOOK_NAME);
         mStartChapter = launchIntent.getIntExtra(IntentFlags.BasePlayer.START_CHAPTER, 0);
         mEndChapter = launchIntent.getIntExtra(IntentFlags.BasePlayer.START_CHAPTER, 0);
 
@@ -82,14 +85,14 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
 
         mContentWrapper = (LinearLayout)findViewById(R.id.base_player_content_wrapper);
-        mContentWrapper.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mTouchStartOnContent = true;
-                mGestureDetector.onTouchEvent(event);
-                return true;
-            }
-        });
+//        mContentWrapper.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                mTouchStartOnContent = true;
+//                mGestureDetector.onTouchEvent(event);
+//                return true;
+//            }
+//        });
     }
 
     @Override
@@ -165,5 +168,17 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
     protected void setChapterTitle(String chapterTitle) {
         mChapterTitle.setText(chapterTitle);
+    }
+
+    protected void setContent(View view) {
+        mContentWrapper.addView(view);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mTouchStartOnContent = true;
+                mGestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
     }
 }

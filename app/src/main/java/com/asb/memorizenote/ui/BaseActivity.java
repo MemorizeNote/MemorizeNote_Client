@@ -42,6 +42,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         mProgressDlg = new ProgressDialog(BaseActivity.this);
         mProgressDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDlg.setCancelable(false);
     }
 
     protected void showToast(String msg) {

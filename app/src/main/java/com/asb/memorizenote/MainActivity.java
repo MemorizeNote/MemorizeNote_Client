@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         AbstractData nameData = (AbstractData)mMainListAdapter.getItem(position);
-        Intent playerLaunchIntent = BasePlayerActivity.getLaunchingIntent(this, nameData.mDataType, 0, nameData.mChapterNum);
+        Intent playerLaunchIntent = BasePlayerActivity.getLaunchingIntent(this, nameData.mName, nameData.mDataType, 0, nameData.mChapterNum);
 
         startActivity(playerLaunchIntent);
     }
