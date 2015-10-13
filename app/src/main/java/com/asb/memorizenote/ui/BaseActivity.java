@@ -5,13 +5,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.asb.memorizenote.Constants.*;
 
 /**
  * Created by azureskybox on 15. 10. 13.
  */
-public abstract class BaseActivity extends ActionBarActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
     private ProgressDialog mProgressDlg = null;
 
@@ -38,6 +40,10 @@ public abstract class BaseActivity extends ActionBarActivity {
 
         mProgressDlg = new ProgressDialog(BaseActivity.this);
         mProgressDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    }
+
+    protected void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     protected void showProgress(String msg) {

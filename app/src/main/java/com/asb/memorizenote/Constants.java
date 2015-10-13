@@ -93,7 +93,7 @@ public class Constants {
         public static final int SHOW_PROGRESS = 0;
         public static final int HIDE_PROGRESS = SHOW_PROGRESS+1;
 
-        public static class BaseActivity {
+        public static class MainActivity {
             public static final int UPDATE_LIST = 10;
         }
     }

@@ -1,16 +1,21 @@
 package com.asb.memorizenote;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.asb.memorizenote.Constants.*;
+import com.asb.memorizenote.data.AbstractData;
 import com.asb.memorizenote.data.apater.AbstractAdapter;
 import com.asb.memorizenote.data.apater.NameListAdapter;
+import com.asb.memorizenote.player.BasePlayerActivity;
 import com.asb.memorizenote.reader.AbstractReader;
 import com.asb.memorizenote.reader.ReaderFactory;
 import com.asb.memorizenote.ui.BaseActivity;
@@ -18,35 +23,12 @@ import com.asb.memorizenote.ui.BaseActivity;
 import java.io.File;
 
 
-public class MainActivity extends BaseActivity implements AbstractReader.OnDataReadListener {
+public class MainActivity extends BaseActivity implements AbstractReader.OnDataReadListener, ListView.OnItemClickListener {
 
     boolean mIsUpdating = false;
-    ProgressDialog mProgressDialog;
 
     ListView mMainList;
     NameListAdapter mMainListAdapter;
-
-//    Handler mHandler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            switch(msg.what) {
-//                case 0:
-//                    mProgressDialog = new ProgressDialog(MainActivity.this);
-//                    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//                    mProgressDialog.setMessage("Updating...");
-//                    mProgressDialog.show();
-//                    break;
-//                case 1:
-//                    mProgressDialog.dismiss();
-//                    break;
-//                case 2:
-//                    mMainListAdapter.readDataListFromDB();
-//                    mMainListAdapter.notifyDataSetChanged();
-//                    mProgressDialog.dismiss();
-//                    break;
-//            }
-//        }
-//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +48,7 @@ public class MainActivity extends BaseActivity implements AbstractReader.OnDataR
         if(mMainListAdapter.getCount() > 0) {
             mMainList = (ListView) findViewById(R.id.main_name_list);
             mMainList.setAdapter(mMainListAdapter);
+            mMainList.setOnItemClickListener(this);
 
             mMainListAdapter.notifyDataSetChanged();
         }
@@ -73,7 +56,6 @@ public class MainActivity extends BaseActivity implements AbstractReader.OnDataR
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -100,9 +82,17 @@ public class MainActivity extends BaseActivity implements AbstractReader.OnDataR
     }
 
     @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        AbstractData nameData = (AbstractData)mMainListAdapter.getItem(position);
+        Intent playerLaunchIntent = BasePlayerActivity.getLaunchingIntent(this, nameData.mDataType, 0, nameData.mDataSetCnt);
+
+        startActivity(playerLaunchIntent);
+    }
+
+    @Override
     protected void onHandleExtraMessage(Message msg) {
         switch (msg.what) {
-            case HandlerFlags.BaseActivity.UPDATE_LIST:
+            case HandlerFlags.MainActivity.UPDATE_LIST:
                 mMainListAdapter.readDataListFromDB();
                 mMainListAdapter.notifyDataSetChanged();
                 hideProgress();
@@ -117,7 +107,7 @@ public class MainActivity extends BaseActivity implements AbstractReader.OnDataR
                 adapter.writeDataListToDB();
             } else {
                 mIsUpdating = false;
-                mHandler.sendEmptyMessage(HandlerFlags.BaseActivity.UPDATE_LIST);
+                mHandler.sendEmptyMessage(HandlerFlags.MainActivity.UPDATE_LIST);
             }
         }
     }
