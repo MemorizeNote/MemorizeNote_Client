@@ -21,11 +21,6 @@ public class BookListAdapter extends AbstractAdapter {
         super(context);
     }
 
-    public void readItems(AbstractReader reader) {
-        mItemList.clear();
-        super.readItems(reader);
-    }
-
     @Override
     public void readItem(RawData data) {
 

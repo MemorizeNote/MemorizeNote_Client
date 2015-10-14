@@ -52,9 +52,9 @@ public class SimpleVocaAdapter extends AbstractAdapter {
     public void writeItems(AbstractWriter writer) {
         Log.d("MN", "writeItems, " + mTotalItem + ", " + mTotalUpdatedItem);
 
-        BookInfo info = new BookInfo();
-        info.mBookName = mBookName;
-        mDBHelper.updateBookList(info);
+//        BookInfo info = new BookInfo();
+//        info.mBookName = mBookName;
+//        mDBHelper.updateBookList(info);
 
         int startIdx = mTotalItem - mTotalUpdatedItem;
 
@@ -82,13 +82,10 @@ public class SimpleVocaAdapter extends AbstractAdapter {
         mBookName = bookName;
         mBookType = bookType;
 
-        mCurChapter = mDBHelper.getCurrentChapterOfBook(bookName);
-        if(mCurChapter < 0) {
-            BookInfo info = new BookInfo();
-            info.mBookName = mBookName;
-            mDBHelper.updateBookList(info);
-            mCurChapter = 0;
-        }
+        BookInfo info = new BookInfo();
+        info.mBookName = mBookName;
+        mDBHelper.updateBookList(info);
+        mCurChapter = info.mBookTotalChapter;
 
         mCurItem = 0;
     }
