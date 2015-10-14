@@ -8,4 +8,5 @@ public abstract class AbstractData {
     public int mBookId;
     public int mChapterNum;
     public int mDataType;
+    public int mIndexInChapter;
 }

@@ -13,8 +13,9 @@ import android.widget.ListView;
 import com.asb.memorizenote.Constants.*;
 import com.asb.memorizenote.data.AbstractData;
 import com.asb.memorizenote.data.apater.AbstractAdapter;
+import com.asb.memorizenote.data.apater.DataAdapterManager;
 import com.asb.memorizenote.data.apater.DataUpdateAdapter;
-import com.asb.memorizenote.data.apater.NameListAdapter;
+import com.asb.memorizenote.data.apater.BookListAdapter;
 import com.asb.memorizenote.data.reader.DBReader;
 import com.asb.memorizenote.data.reader.DataFileReader;
 import com.asb.memorizenote.player.BasePlayerActivity;
@@ -23,12 +24,14 @@ import com.asb.memorizenote.ui.BaseActivity;
 import java.io.File;
 
 
-public class MainActivity extends BaseActivity implements ListView.OnItemClickListener {
+public class MainActivity extends BaseActivity implements ListView.OnItemClickListener, AbstractAdapter.OnDataLoadListener {
 
     boolean mIsUpdating = false;
 
+    DataAdapterManager mDataAdapterManager = null;
+
     ListView mMainList;
-    NameListAdapter mMainListAdapter;
+    BookListAdapter mMainListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,24 +43,10 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         if(!dataDir.exists())
             dataDir.mkdir();
 
-        DBReader reader = new DBReader(getApplicationContext(), ReaderFlags.DB.TARGET_BOOK);
+        showProgress("Loading...");
 
-        mMainListAdapter = new NameListAdapter(getApplicationContext());
-        mMainListAdapter.setListener(new AbstractAdapter.OnDataLoadListener() {
-            @Override
-            public void onCompleted() {
-                Log.e("MN", "onCompleted");
-
-                if(mMainListAdapter.getCount() > 0) {
-                    mMainListAdapter.notifyDataSetChanged();
-                }
-            }
-        });
-        mMainListAdapter.readItems(reader);
-
-        mMainList = (ListView) findViewById(R.id.main_name_list);
-        mMainList.setAdapter(mMainListAdapter);
-        mMainList.setOnItemClickListener(this);
+        mDataAdapterManager = ((MemorizeNoteApplication)getApplication()).getDataAdpaterManager();
+        mDataAdapterManager.initialize(this);
     }
 
     @Override
@@ -77,16 +66,8 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
                 mIsUpdating = true;
                 showProgress("Updating...");
 
-                DataFileReader reader = new DataFileReader(getApplicationContext());
+                mDataAdapterManager.update(AdapterManagerFlags.UPDATE_FROM_FILES, this);
 
-                DataUpdateAdapter updateAdpater = new DataUpdateAdapter(getApplicationContext());
-                updateAdpater.setListener(new AbstractAdapter.OnDataLoadListener() {
-                    @Override
-                    public void onCompleted() {
-                        mHandler.sendEmptyMessage(HandlerFlags.MainActivity.UPDATE_LIST);
-                    }
-                });
-                updateAdpater.readItems(reader);
                 break;
         }
 
@@ -113,5 +94,24 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
                 mMainListAdapter.readItems(reader);
                 break;
         }
+    }
+
+    @Override
+    public void onCompleted() {
+        if(mIsUpdating) {
+            mIsUpdating = false;
+            mMainListAdapter.notifyDataSetChanged();
+        }
+        else {
+            mMainListAdapter = mDataAdapterManager.getBookListAdapter();
+
+            mMainList = (ListView) findViewById(R.id.main_name_list);
+            mMainList.setAdapter(mMainListAdapter);
+            mMainList.setOnItemClickListener(this);
+
+            mMainListAdapter.notifyDataSetChanged();
+        }
+
+        hideProgress();
     }
 }

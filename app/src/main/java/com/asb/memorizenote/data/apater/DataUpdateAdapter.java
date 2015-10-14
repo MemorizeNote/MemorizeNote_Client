@@ -7,6 +7,7 @@ import com.asb.memorizenote.Constants.*;
 import com.asb.memorizenote.data.db.BookInfo;
 import com.asb.memorizenote.data.db.MemorizeDBHelper;
 import com.asb.memorizenote.data.reader.RawData;
+import com.asb.memorizenote.player.adapter.SimpleVocaAdapter;
 
 import java.util.ArrayList;
 
@@ -20,11 +21,15 @@ public class DataUpdateAdapter extends AbstractAdapter {
 
     private MemorizeDBHelper mDBHelper;
 
+    private SimpleVocaAdapter mSimpleVocaAdpater;
+
     public DataUpdateAdapter(Context context) {
         super(context);
 
         mInfo = new BookInfo();
         mDBHelper = new MemorizeDBHelper(mContext);
+
+        mSimpleVocaAdpater = new SimpleVocaAdapter(mContext);
     }
 
     @Override
@@ -38,13 +43,18 @@ public class DataUpdateAdapter extends AbstractAdapter {
     }
 
     @Override
-    public void onItemSetChanged(String itemSetName, int itemSetType, int itemNum) {
-        mInfo.mBookName = itemSetName;
-        mInfo.mBookType = itemSetType;
+    public void onBookChanged(String bookName, int bookType, int chapter) {
+        mInfo.mBookName = bookName;
+        mInfo.mBookType = bookType;
 
         mDBHelper.updateBookList(mInfo);
-
         mCurrentItemIndex = 0;
+
+        switch(mInfo.mBookType) {
+            case BookType.SIMPLE_VOCA:
+                mSimpleVocaAdpater.onBookChanged(mInfo.mBookName, mInfo.mBookType, mDBHelper.getCurrentChapterOfBook(mInfo.mBookName));
+                break;
+        }
     }
 
     @Override
@@ -55,7 +65,7 @@ public class DataUpdateAdapter extends AbstractAdapter {
         values.put(DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER, mCurrentItemIndex);
 
         switch(mInfo.mBookType) {
-            case DataType.SIMPLE_VOCA:
+            case BookType.SIMPLE_VOCA:
                 values.put(DB.ITEM_TABLE.KEY_DATA_01, (String)data.mRawData01);
                 values.put(DB.ITEM_TABLE.KEY_DATA_02, (String)data.mRawData02);
                 break;

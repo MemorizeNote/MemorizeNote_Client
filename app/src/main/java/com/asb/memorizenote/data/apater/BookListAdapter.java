@@ -10,20 +10,19 @@ import com.asb.memorizenote.R;
 import com.asb.memorizenote.data.NameListData;
 import com.asb.memorizenote.data.reader.AbstractReader;
 import com.asb.memorizenote.data.reader.RawData;
-import com.asb.memorizenote.data.writer.AbstractWriter;
 
 import java.util.ArrayList;
 
 /**
  * Created by azureskybox on 15. 10. 12.
  */
-public class NameListAdapter extends AbstractAdapter {
-    public NameListAdapter(Context context) {
+public class BookListAdapter extends AbstractAdapter {
+    public BookListAdapter(Context context) {
         super(context);
     }
 
     public void readItems(AbstractReader reader) {
-        mDataList.clear();
+        mItemList.clear();
         super.readItems(reader);
     }
 
@@ -44,14 +43,14 @@ public class NameListAdapter extends AbstractAdapter {
             convertView = inflater.inflate(R.layout.main_name_list_item, null, false);
         }
 
-        ((TextView)convertView.findViewById(R.id.name_list_name)).setText(((NameListData) mDataList.get(position)).mName);
-        ((TextView)convertView.findViewById(R.id.name_list_count)).setText("" + (((NameListData) mDataList.get(position)).mChapterNum + 1));
+        ((TextView)convertView.findViewById(R.id.name_list_name)).setText(((NameListData) mItemList.get(position)).mName);
+        ((TextView)convertView.findViewById(R.id.name_list_count)).setText("" + (((NameListData) mItemList.get(position)).mChapterNum + 1));
 
         return convertView;
     }
 
     @Override
-    public void onItemSetChanged(String itemSetName, int itemSetType, int itemNum) {
+    public void onBookChanged(String bookName, int bookType, int chapter) {
 
     }
 
@@ -68,7 +67,7 @@ public class NameListAdapter extends AbstractAdapter {
             convertedData.mChapterNum = (int)data.mRawData02;
             convertedData.mDataType = (int)data.mRawData03;
             convertedData.mBookId = (int)data.mRawData04;
-            mDataList.add(convertedData);
+            mItemList.add(convertedData);
         }
     }
 

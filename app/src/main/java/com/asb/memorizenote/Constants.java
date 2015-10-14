@@ -18,7 +18,7 @@ public class Constants {
         public static final String KEY_TYPE = "type";
     }
 
-    public static class DataType {
+    public static class BookType {
         public static final int NONE = -1;
         public static final int SIMPLE_VOCA = 0;
         public static final int NAME_LIST_DATA = 9999;
@@ -64,6 +64,11 @@ public class Constants {
             public static final int TARGET_BOOK = 0;
             public static final int TARGET_ITEM = 1;
         }
+    }
+
+    public static class AdapterManagerFlags {
+        public static final int UPDATE_FROM_FILES = 0;
+        public static final int UPDATE_FROM_HTTP = 1;
     }
 
     public static class DB {

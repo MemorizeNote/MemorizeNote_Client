@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.asb.memorizenote.Constants;
-import com.asb.memorizenote.data.apater.AbstractAdapter;
 import com.asb.memorizenote.utils.Utils;
 
 import java.io.BufferedReader;
@@ -23,11 +22,8 @@ public class DataFileReader extends AbstractReader {
 
     public DataFileReader(Context context) {
         super(context);
-    }
 
-    @Override
-    public boolean init(OnDataReadListener listener) {
-        super.init(listener);
+        mType = Constants.ReaderType.FILE;
 
         mDataFileList = new ArrayList<File>();
 
@@ -41,21 +37,39 @@ public class DataFileReader extends AbstractReader {
                 mDataFileList.add(dataFile);
         }
 
-        return mDataFileList.size() > 0 ? true:false;
+        return;
+    }
+
+    public DataFileReader(Context context, String fileName) {
+        super(context);
+
+        mType = Constants.ReaderType.FILE;
+
+        mDataFileList = new ArrayList<File>();
+
+        File targetFile = new File(Constants.FOLDER_PATH + "/" + fileName);
+        if(!targetFile.exists())
+            return;
+
+        if(Utils.isExpectedFileType(targetFile, "txt"))
+            mDataFileList.add(targetFile);
+        else
+            return;
     }
 
     @Override
     public void readAll() {
         boolean sendHeader = false;
         String dataName = null;
-        int dataType = Constants.DataType.NONE;
+        int dataType = Constants.BookType.NONE;
 
         for(File dataFile : mDataFileList) {
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(dataFile));
 
-                ArrayList<String> dataList = new ArrayList<String>();
-                String rawData = null;
+                ArrayList<RawData> rawDataList = new ArrayList<RawData>();
+
+                String rawData;
                 while((rawData = reader.readLine()) != null) {
                     Log.d("MN", rawData);
 
@@ -67,25 +81,61 @@ public class DataFileReader extends AbstractReader {
                             dataName = metaDatas[1];
                         }
                         else if(metaDatas[0].equals(Constants.MetaData.KEY_TYPE)) {
-                            dataType = Constants.DataType.getType(metaDatas[1]);
+                            dataType = Constants.BookType.getType(metaDatas[1]);
                         }
                     }
                     else {
                         if(!sendHeader) {
                             sendHeader = true;
-                            mListener.onItemSetChanged(dataName, dataType, 0);
+                            mListener.onBookChanged(dataName, dataType, 0);
                         }
 
-                        String[] splitted = rawData.split(";");
+                        String[] split_string = rawData.split(";");
 
                         RawData convertedRawData = new RawData();
-                        convertedRawData.mRawData01 = splitted[0];
-                        convertedRawData.mRawData02 = splitted[1];
+
+                        int rawDataLength = split_string.length;
+                        switch(rawDataLength) {
+                            case 15:
+                                convertedRawData.mRawData15 = split_string[14];
+                            case 14:
+                                convertedRawData.mRawData14 = split_string[13];
+                            case 13:
+                                convertedRawData.mRawData13 = split_string[12];
+                            case 12:
+                                convertedRawData.mRawData12 = split_string[11];
+                            case 11:
+                                convertedRawData.mRawData11 = split_string[10];
+                            case 10:
+                                convertedRawData.mRawData10 = split_string[9];
+                            case 9:
+                                convertedRawData.mRawData09 = split_string[8];
+                            case 8:
+                                convertedRawData.mRawData08 = split_string[7];
+                            case 7:
+                                convertedRawData.mRawData07 = split_string[6];
+                            case 6:
+                                convertedRawData.mRawData06 = split_string[5];
+                            case 5:
+                                convertedRawData.mRawData05 = split_string[4];
+                            case 4:
+                                convertedRawData.mRawData04 = split_string[3];
+                            case 3:
+                                convertedRawData.mRawData03 = split_string[2];
+                            case 2:
+                                convertedRawData.mRawData02 = split_string[1];
+                            case 1:
+                                convertedRawData.mRawData01 = split_string[0];
+                                break;
+                        }
+
+                        rawDataList.add(convertedRawData);
 
                         mListener.onItem(convertedRawData);
                     }
                 }
 
+                mListener.onItemList(rawDataList);
                 sendHeader = false;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

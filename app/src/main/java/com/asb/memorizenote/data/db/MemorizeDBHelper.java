@@ -63,6 +63,39 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public int getCurrentChapterOfBook(String bookName) {
+        int currentChapter = -1;
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(BOOK_TABLE, null, DB.BOOK_TABLE.KEY_NAME + "=?", new String[]{bookName}, null, null, null, null);
+        if(cursor.moveToFirst()) {
+            currentChapter = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_COUNT));
+        }
+
+        cursor.close();
+        db.close();
+
+        return currentChapter;
+    }
+
+    public int getNextChapterOfBook(String bookName) {
+        int lastChapter = 0;
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(BOOK_TABLE, null, DB.BOOK_TABLE.KEY_NAME + "=?", new String[]{bookName}, null, null, null, null);
+        if(cursor.moveToFirst()) {
+            lastChapter = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_COUNT));
+            ++lastChapter;
+        }
+
+        cursor.close();
+        db.close();
+
+        return lastChapter;
+    }
+
     public void getBookList(ArrayList<RawData> dataList) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(BOOK_TABLE, null, null, null, null, null, null, null);

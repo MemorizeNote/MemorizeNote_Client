@@ -7,7 +7,6 @@ import android.widget.BaseAdapter;
 
 import com.asb.memorizenote.Constants;
 import com.asb.memorizenote.data.AbstractData;
-import com.asb.memorizenote.data.db.MemorizeDBHelper;
 import com.asb.memorizenote.data.reader.AbstractReader;
 import com.asb.memorizenote.data.reader.RawData;
 import com.asb.memorizenote.data.writer.AbstractWriter;
@@ -22,16 +21,20 @@ public abstract class AbstractAdapter extends BaseAdapter implements AbstractRea
 
     protected OnDataLoadListener mListener;
 
-    protected ArrayList<AbstractData> mDataList;
-    protected int mDataType;
-    protected String mDataName;
-    protected int mDataNameId;
+    protected ArrayList<AbstractData> mItemList;
+    protected int mBookType;
+    protected String mBookName;
+    protected int mBookId;
     protected int mDataSetIndex;
+
+    protected AbstractReader mCurrentReader = null;
+
+    protected boolean mIsUpdating = false;
 
     public AbstractAdapter(Context context) {
         mContext = context;
-        mDataList = new ArrayList<AbstractData>();
-        mDataType = Constants.DataType.NONE;
+        mItemList = new ArrayList<AbstractData>();
+        mBookType = Constants.BookType.NONE;
     }
 
     public void setListener(OnDataLoadListener listener) {
@@ -40,14 +43,14 @@ public abstract class AbstractAdapter extends BaseAdapter implements AbstractRea
 
     @Override
     public int getCount() {
-        return mDataList.size();
+        return mItemList.size();
     }
     @Override
     public Object getItem(int position) {
-        if(mDataList.size() == 0)
+        if(mItemList.size() == 0)
             return null;
         else
-            return mDataList.get(position);
+            return mItemList.get(position);
     }
     @Override
     public long getItemId(int position) {
@@ -59,25 +62,25 @@ public abstract class AbstractAdapter extends BaseAdapter implements AbstractRea
         return null;
     }
 
-    public int getDataType() {
-        return mDataType;
+    public int getBookType() {
+        return mBookType;
     }
-    public void setDataType(int dataType) {
-        mDataType = dataType;
-    }
-
-    public String getDataName() {
-        return mDataName;
-    }
-    public void setDataName(String name) {
-        mDataName = name;
+    public void setBookType(int dataType) {
+        mBookType = dataType;
     }
 
-    public int getmDataNameId() {
-        return mDataNameId;
+    public String getBookName() {
+        return mBookName;
     }
-    public void setmDataNameId(int dataNameId) {
-        this.mDataNameId = dataNameId;
+    public void setBookName(String name) {
+        mBookName = name;
+    }
+
+    public int getBookId() {
+        return mBookId;
+    }
+    public void setBookId(int dataNameId) {
+        this.mBookId = dataNameId;
     }
 
     public int getmDataSetIndex() {
@@ -88,12 +91,20 @@ public abstract class AbstractAdapter extends BaseAdapter implements AbstractRea
     }
 
     public ArrayList<AbstractData> getDataList() {
-        return mDataList;
+        return mItemList;
+    }
+
+    public void setUpdating(boolean updating) {
+        mIsUpdating = updating;
     }
 
     public void readItems(AbstractReader reader) {
-        reader.init(this);
-        reader.readAll();
+        if(!mIsUpdating)
+            mItemList = new ArrayList<>();
+
+        mCurrentReader = reader;
+        mCurrentReader.init(this);
+        mCurrentReader.readAll();
     }
     abstract public void readItem(RawData data);
 

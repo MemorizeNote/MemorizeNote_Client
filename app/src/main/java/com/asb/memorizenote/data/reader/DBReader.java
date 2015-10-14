@@ -2,6 +2,7 @@ package com.asb.memorizenote.data.reader;
 
 import android.content.Context;
 
+import com.asb.memorizenote.Constants;
 import com.asb.memorizenote.Constants.*;
 import com.asb.memorizenote.data.db.MemorizeDBHelper;
 
@@ -18,6 +19,9 @@ public class DBReader extends AbstractReader {
 
     public DBReader(Context context, int target) {
         super(context);
+
+        mType = Constants.ReaderType.DB;
+
         mReadTarget = target;
         mDBHelper = new MemorizeDBHelper(mContext);
     }

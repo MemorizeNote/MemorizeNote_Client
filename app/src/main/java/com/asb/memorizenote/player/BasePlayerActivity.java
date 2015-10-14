@@ -1,9 +1,7 @@
 package com.asb.memorizenote.player;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.gesture.GestureOverlayView;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -24,7 +22,7 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
-    protected int mDataType = DataType.NONE;
+    protected int mDataType = BookType.NONE;
     protected String mBookName = null;
     protected int mStartChapter = 0;
     protected int mEndChapter = 0;
@@ -46,7 +44,7 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
         intent.putExtra(IntentFlags.BasePlayer.END_CHAPTER, endChapter);
 
         switch(dataType) {
-            case DataType.SIMPLE_VOCA:
+            case BookType.SIMPLE_VOCA:
                 intent.setClass(context, SimpleVocaPlayerActivity.class);
                 return intent;
             default:
@@ -61,8 +59,8 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
         Intent launchIntent = getIntent();
 
-        mDataType = launchIntent.getIntExtra(IntentFlags.BasePlayer.DATA_TYPE, DataType.NONE);
-        if(!DataType.isValidType(mDataType)) {
+        mDataType = launchIntent.getIntExtra(IntentFlags.BasePlayer.DATA_TYPE, BookType.NONE);
+        if(!BookType.isValidType(mDataType)) {
             finish();
         }
 

@@ -38,10 +38,14 @@ public abstract class AbstractReader {
         mLastChpter = last;
     }
 
+    public int getType() {
+        return mType;
+    }
+
     public abstract void readAll();
 
     public interface OnDataReadListener {
-        void onItemSetChanged(String itemSetName, int itemSetType, int itemNum);
+        void onBookChanged(String bookName, int bookType, int chapter);
         void onItem(RawData data);
         void onItemList(ArrayList<RawData> dataList);
         void onCompleted();

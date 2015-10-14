@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.asb.memorizenote.Constants.*;
+import com.asb.memorizenote.MemorizeNoteApplication;
 import com.asb.memorizenote.R;
 import com.asb.memorizenote.data.SimpleVocaData;
 import com.asb.memorizenote.data.apater.AbstractAdapter;
@@ -36,24 +37,10 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         mWordView = (TextView)content.findViewById(R.id.simple_voca_player_word);
         mMeaningView = (TextView)content.findViewById(R.id.simple_voca_player_meaning);
 
-        showProgress("Loading...");
+        mAdapter = (SimpleVocaAdapter)((MemorizeNoteApplication) getApplication()).getDataAdpaterManager().getItemListAdapter(mBookName);
 
-        //Init adapter
-        mAdapter = new SimpleVocaAdapter(getApplicationContext());
-        mAdapter.setListener(new AbstractAdapter.OnDataLoadListener() {
-            @Override
-            public void onCompleted() {
-                hideProgress();
-
-                SimpleVocaData data = mAdapter.first();
-                setWordAndMeaning(data.mWord, data.mMeaning);
-            }
-        });
-
-        DBReader reader = new DBReader(getApplicationContext(), ReaderFlags.DB.TARGET_ITEM);
-        reader.setDataSetRange(0, 1);
-        reader.setTargetBookName(mBookName);
-        mAdapter.readItems(reader);
+        SimpleVocaData data = mAdapter.first();
+        setWordAndMeaning(data.mWord, data.mMeaning);
     }
 
     @Override

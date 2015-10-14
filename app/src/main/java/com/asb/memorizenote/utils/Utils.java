@@ -1,5 +1,11 @@
 package com.asb.memorizenote.utils;
 
+import android.content.Context;
+
+import com.asb.memorizenote.Constants;
+import com.asb.memorizenote.data.apater.AbstractAdapter;
+import com.asb.memorizenote.player.adapter.SimpleVocaAdapter;
+
 import java.io.File;
 
 /**
@@ -15,6 +21,15 @@ public class Utils {
         if(fileExt.equals(ext))
             return true;
         return false;
+    }
+
+    public static AbstractAdapter getAdapter(Context context, int bookType) {
+        switch(bookType) {
+            case Constants.BookType.SIMPLE_VOCA:
+                return new SimpleVocaAdapter(context);
+            default:
+                return null;
+        }
     }
 
 }
