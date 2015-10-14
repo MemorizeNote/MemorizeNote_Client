@@ -28,6 +28,16 @@ public class NameListAdapter extends AbstractAdapter {
     }
 
     @Override
+    public void readItem(RawData data) {
+
+    }
+
+    @Override
+    public void writeItem(RawData data) {
+
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
             LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

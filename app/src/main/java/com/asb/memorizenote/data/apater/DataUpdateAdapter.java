@@ -28,6 +28,16 @@ public class DataUpdateAdapter extends AbstractAdapter {
     }
 
     @Override
+    public void readItem(RawData data) {
+
+    }
+
+    @Override
+    public void writeItem(RawData data) {
+
+    }
+
+    @Override
     public void onItemSetChanged(String itemSetName, int itemSetType, int itemNum) {
         mInfo.mBookName = itemSetName;
         mInfo.mBookType = itemSetType;

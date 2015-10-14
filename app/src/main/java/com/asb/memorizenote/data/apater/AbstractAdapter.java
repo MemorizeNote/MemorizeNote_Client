@@ -95,10 +95,12 @@ public abstract class AbstractAdapter extends BaseAdapter implements AbstractRea
         reader.init(this);
         reader.readAll();
     }
+    abstract public void readItem(RawData data);
 
     public void writeItems(AbstractWriter writer) {
 
     }
+    abstract public void writeItem(RawData data);
 
     public interface OnDataLoadListener {
         void onCompleted();
