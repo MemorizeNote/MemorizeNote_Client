@@ -213,7 +213,26 @@ public class SimpleVocaAdapter extends AbstractAdapter {
 
             SimpleVocaData convertedData = new SimpleVocaData();
             convertedData.mWord = (String)data.mRawData01;
-            convertedData.mMeaning = (String)data.mRawData02;
+//            convertedData.mMeaning = (String)data.mRawData02;
+            convertedData.mMeaning = "";
+            if(data.mRawData02 != null) {
+                convertedData.mMeaning += data.mRawData02;
+            }
+            if(data.mRawData03 != null) {
+                convertedData.mMeaning += "\n"+data.mRawData03;
+            }
+            if(data.mRawData04 != null) {
+                convertedData.mMeaning += "\n"+data.mRawData04;
+            }
+            if(data.mRawData05 != null) {
+                convertedData.mMeaning += "\n"+data.mRawData05;
+            }
+            if(data.mRawData06 != null) {
+                convertedData.mMeaning += "\n"+data.mRawData06;
+            }
+            if(data.mRawData07 != null) {
+                convertedData.mMeaning += "\n"+data.mRawData07;
+            }
             convertedData.mName = mBookName;
             convertedData.mChapterNum = mTotalChapter;
             convertedData.mIndexInChapter = indexInChapter++;

@@ -190,7 +190,7 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(ITEM_TABLE, null,
                 null,
                 null, null, null,
-                DB.ITEM_TABLE.KEY_CHAPTER+" ASC, " + DB.ITEM_TABLE.KEY_BOOK_NAME+" ASC",
+                DB.ITEM_TABLE.KEY_BOOK_NAME+" ASC, " + DB.ITEM_TABLE.KEY_CHAPTER+" ASC",
                 null);
         if(cursor.moveToFirst()) {
             do {
@@ -212,7 +212,11 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
                 Log.e("MN", "book name="+cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_NAME))
                 +", chapter="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER))
                 +", index in chapter="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER))
-                +", data01="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_01)));
+                +", data01="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_01))
+                +", data02="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_02))
+                +", data03="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_03))
+                +", data04="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_04))
+                +", data05="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_05)));
 
             } while (cursor.moveToNext());
         }

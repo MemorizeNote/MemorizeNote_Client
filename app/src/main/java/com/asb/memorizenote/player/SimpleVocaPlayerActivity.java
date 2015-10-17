@@ -38,8 +38,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         setContent(content);
 
         mWordView = (TextView)content.findViewById(R.id.simple_voca_player_word);
-        mMeaningView = (TextView)content.findViewById(R.id.simple_voca_player_meaning);
-        mMeaningView.setOnClickListener(new View.OnClickListener() {
+        mWordView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int curPosition = mAdapter.currentPosition();
@@ -53,6 +52,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
                 mMeaningDismissList.set(curPosition, !itemDismiss);
             }
         });
+        mMeaningView = (TextView)content.findViewById(R.id.simple_voca_player_meaning);
         mMeaningView.setTextColor(Color.BLACK);
 
         mAdapter = (SimpleVocaAdapter)((MemorizeNoteApplication) getApplication()).getDataAdpaterManager().getItemListAdapter(mBookName);
