@@ -9,15 +9,47 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
+        android:weightSum="1"
         android:layout_weight="0.1">
 
         <TextView
             android:id="@+id/base_player_chapter_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:textSize="30dp"
             android:textColor="#FF000000"
-            android:text="Chapter. 01"/>
+            android:text="Chapter. 01"
+            android:layout_weight="0.5"/>
+
+        <LinearLayout
+            android:id="@+id/base_player_extra_buttons_wrapper"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:weightSum="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/base_player_extra_btn_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"/>
+
+            <Button
+                android:id="@+id/base_player_extra_btn_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"/>
+
+            <Button
+                android:id="@+id/base_player_extra_btn_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -7,6 +7,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,6 +33,11 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     protected TextView mChapterTitle = null;
 
     protected LinearLayout mContentWrapper = null;
+
+    protected LinearLayout mExtraButtonsWrapper = null;
+    protected Button mExtraButton01 = null;
+    protected Button mExtraButton02 = null;
+    protected Button mExtraButton03 = null;
 
     private GestureDetector mGestureDetector;
     private boolean mTouchStartOnChapter;
@@ -84,6 +90,13 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
 
         mContentWrapper = (LinearLayout)findViewById(R.id.base_player_content_wrapper);
+
+        mExtraButtonsWrapper = (LinearLayout)findViewById(R.id.base_player_extra_buttons_wrapper);
+        mExtraButton01 = (Button)findViewById(R.id.base_player_extra_btn_1);
+        mExtraButton02 = (Button)findViewById(R.id.base_player_extra_btn_2);
+        mExtraButton02.setVisibility(View.INVISIBLE);
+        mExtraButton03 = (Button)findViewById(R.id.base_player_extra_btn_3);
+        mExtraButton03.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -172,5 +185,10 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
                 return true;
             }
         });
+    }
+
+    protected void setExtraButton(String name, View.OnClickListener listener) {
+        mExtraButton01.setText(name);
+        mExtraButton01.setOnClickListener(listener);
     }
 }

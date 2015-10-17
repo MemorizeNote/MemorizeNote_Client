@@ -190,7 +190,7 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(ITEM_TABLE, null,
                 null,
                 null, null, null,
-                DB.ITEM_TABLE.KEY_CHAPTER+" ASC",
+                DB.ITEM_TABLE.KEY_CHAPTER+" ASC, " + DB.ITEM_TABLE.KEY_BOOK_NAME+" ASC",
                 null);
         if(cursor.moveToFirst()) {
             do {

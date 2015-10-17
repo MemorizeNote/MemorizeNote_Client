@@ -13,6 +13,7 @@ import com.asb.memorizenote.data.db.BookInfo;
 import com.asb.memorizenote.data.db.MemorizeDBHelper;
 import com.asb.memorizenote.data.reader.RawData;
 import com.asb.memorizenote.data.writer.AbstractWriter;
+import com.asb.memorizenote.utils.MNLog;
 
 import java.util.ArrayList;
 
@@ -66,6 +67,8 @@ public class SimpleVocaAdapter extends AbstractAdapter {
 
             mDBHelper.addItem(values);
         }
+
+        mTotalUpdatedItem = 0;
     }
 
     @Override
@@ -120,6 +123,8 @@ public class SimpleVocaAdapter extends AbstractAdapter {
         ++mCurItem;
         ++mCurItemInChapter;
 
+        MNLog.d("next, mCurItem="+mCurItem+", mCurItemInChapter="+mCurItemInChapter+"mCurChapter="+mCurChapter+", totalItemInChapter="+mTotalItemPerChapter.get(mCurChapter));
+
         if(mCurItemInChapter < mTotalItemPerChapter.get(mCurChapter))
             return (SimpleVocaData) mItemList.get(mCurItem);
         else {
@@ -141,12 +146,14 @@ public class SimpleVocaAdapter extends AbstractAdapter {
         --mCurItem;
         --mCurItemInChapter;
 
+        MNLog.d("previous, mCurItem="+mCurItem+", mCurItemInChapter="+mCurItemInChapter+"mCurChapter="+mCurChapter+", totalItemInChapter="+mTotalItemPerChapter.get(mCurChapter));
+
         if(mCurItemInChapter >= 0)
             return (SimpleVocaData) mItemList.get(mCurItem);
         else {
             if(mCurChapter > 0) {
                 --mCurChapter;
-                mCurItemInChapter = 0;
+                mCurItemInChapter = mTotalItemPerChapter.get(mCurChapter)-1;
 
                 return (SimpleVocaData) mItemList.get(mCurItem);
             }
@@ -164,18 +171,20 @@ public class SimpleVocaAdapter extends AbstractAdapter {
 
     private void readItemsWithDBReader(ArrayList<RawData> dataList) {
         mTotalItem = dataList.size();
-        mTotalChapter = (int)dataList.get(dataList.size()-1).mRawData02+1;
+        mTotalChapter = (int)dataList.get(dataList.size()-1).mRawData02;
 
-        int curChapter = 0;
+        MNLog.d("readItemsWithDBReader, mTotalItem="+mTotalItem+", mTotalChapter="+mTotalChapter);
+
+        int curChapter = 1;
         int itemsInChapter = 0;
         for(RawData data : dataList) {
-            ++itemsInChapter;
-
             if(data.mRawData02 != curChapter) {
                 mTotalItemPerChapter.add(itemsInChapter);
                 itemsInChapter = 0;
                 ++curChapter;
             }
+
+            ++itemsInChapter;
 
             SimpleVocaData convertedData = new SimpleVocaData();
             convertedData.mName = mBookName;
@@ -189,6 +198,9 @@ public class SimpleVocaAdapter extends AbstractAdapter {
 
         //Set item count of last chapter in list.
         mTotalItemPerChapter.add(itemsInChapter);
+
+        for(int items : mTotalItemPerChapter)
+            MNLog.d(""+items);
     }
 
     private void readItemsWithFileReader(ArrayList<RawData> dataList) {

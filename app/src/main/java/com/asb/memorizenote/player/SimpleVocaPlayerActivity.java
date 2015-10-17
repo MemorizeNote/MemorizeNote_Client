@@ -7,6 +7,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -63,7 +64,18 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
         SimpleVocaData data = mAdapter.first();
         setWordAndMeaning(data.mWord, data.mMeaning);
-        setChapterTitle("Chapter. "+(data.mChapterNum));
+        setChapterTitle("Chapter. " + (data.mChapterNum));
+
+        setExtraButton("Clear", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMeaningView.setTextColor(Color.BLACK);
+
+                int itemCount = mAdapter.getCount();
+                for(int i=0; i<itemCount; i++)
+                    mMeaningDismissList.set(i, true);
+            }
+        });
     }
 
     @Override
@@ -88,7 +100,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
             else
                 mMeaningView.setTextColor(Color.WHITE);
 
-            setChapterTitle("Chapter "+(data.mChapterNum));
+            setChapterTitle("Chapter. "+(data.mChapterNum));
         }
     }
 
@@ -104,7 +116,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
             else
                 mMeaningView.setTextColor(Color.WHITE);
 
-            setChapterTitle("Chapter "+(data.mChapterNum));
+            setChapterTitle("Chapter. "+(data.mChapterNum));
         }
     }
 
