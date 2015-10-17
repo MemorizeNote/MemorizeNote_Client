@@ -16,6 +16,7 @@ import com.asb.memorizenote.data.apater.AbstractAdapter;
 import com.asb.memorizenote.data.apater.DataAdapterManager;
 import com.asb.memorizenote.data.apater.DataUpdateAdapter;
 import com.asb.memorizenote.data.apater.BookListAdapter;
+import com.asb.memorizenote.data.db.MemorizeDBHelper;
 import com.asb.memorizenote.data.reader.DBReader;
 import com.asb.memorizenote.data.reader.DataFileReader;
 import com.asb.memorizenote.player.BasePlayerActivity;
@@ -67,7 +68,10 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
                 showProgress("Updating...");
 
                 mDataAdapterManager.update(AdapterManagerFlags.UPDATE_FROM_FILES, this);
-
+                break;
+            case R.id.action_dump:
+                MemorizeDBHelper helper = new MemorizeDBHelper(getApplicationContext());
+                helper.dump();
                 break;
         }
 

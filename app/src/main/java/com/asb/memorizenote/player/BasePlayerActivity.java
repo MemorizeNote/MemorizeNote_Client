@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -83,14 +84,6 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
 
         mContentWrapper = (LinearLayout)findViewById(R.id.base_player_content_wrapper);
-//        mContentWrapper.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                mTouchStartOnContent = true;
-//                mGestureDetector.onTouchEvent(event);
-//                return true;
-//            }
-//        });
     }
 
     @Override
@@ -170,6 +163,7 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
     protected void setContent(View view) {
         mContentWrapper.addView(view);
+        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

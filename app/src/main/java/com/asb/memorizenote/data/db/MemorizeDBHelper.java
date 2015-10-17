@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.asb.memorizenote.Constants.DB;
 import com.asb.memorizenote.data.AbstractData;
@@ -180,6 +181,39 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
                 data.mRawData12 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_09));
                 data.mRawData13 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_10));
                 dataList.add(data);
+            } while (cursor.moveToNext());
+        }
+    }
+
+    public void dump() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(ITEM_TABLE, null,
+                null,
+                null, null, null,
+                DB.ITEM_TABLE.KEY_CHAPTER+" ASC",
+                null);
+        if(cursor.moveToFirst()) {
+            do {
+                RawData data = new RawData();
+                data.mRawData01 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_NAME));
+                data.mRawData02 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER));
+                data.mRawData03 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER));
+                data.mRawData04 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_01));
+                data.mRawData05 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_02));
+                data.mRawData06 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_03));
+                data.mRawData07 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_04));
+                data.mRawData08 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_05));
+                data.mRawData09 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_06));
+                data.mRawData10 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_07));
+                data.mRawData11 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_08));
+                data.mRawData12 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_09));
+                data.mRawData13 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_10));
+
+                Log.e("MN", "book name="+cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_NAME))
+                +", chapter="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER))
+                +", index in chapter="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER))
+                +", data01="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_01)));
+
             } while (cursor.moveToNext());
         }
     }

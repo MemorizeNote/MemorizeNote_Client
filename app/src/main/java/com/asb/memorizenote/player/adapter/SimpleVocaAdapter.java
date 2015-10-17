@@ -52,10 +52,6 @@ public class SimpleVocaAdapter extends AbstractAdapter {
     public void writeItems(AbstractWriter writer) {
         Log.d("MN", "writeItems, " + mTotalItem + ", " + mTotalUpdatedItem);
 
-//        BookInfo info = new BookInfo();
-//        info.mBookName = mBookName;
-//        mDBHelper.updateBookList(info);
-
         int startIdx = mTotalItem - mTotalUpdatedItem;
 
         for(int i=startIdx; i<mTotalItem; i++) {
@@ -122,24 +118,48 @@ public class SimpleVocaAdapter extends AbstractAdapter {
 
     public SimpleVocaData next() {
         ++mCurItem;
+        ++mCurItemInChapter;
 
-        if(mCurItem < mTotalItem)
+        if(mCurItemInChapter < mTotalItemPerChapter.get(mCurChapter))
             return (SimpleVocaData) mItemList.get(mCurItem);
         else {
-            --mCurItem;
-            return null;
+            if(mCurChapter < mTotalChapter-1) {
+                ++mCurChapter;
+                mCurItemInChapter = 0;
+
+                return (SimpleVocaData) mItemList.get(mCurItem);
+            }
+            else {
+                --mCurItem;
+                --mCurItemInChapter;
+                return null;
+            }
         }
     }
 
     public SimpleVocaData previous() {
         --mCurItem;
+        --mCurItemInChapter;
 
-        if(mCurItem >= 0)
+        if(mCurItemInChapter >= 0)
             return (SimpleVocaData) mItemList.get(mCurItem);
         else {
-            mCurItem = 0;
-            return null;
+            if(mCurChapter > 0) {
+                --mCurChapter;
+                mCurItemInChapter = 0;
+
+                return (SimpleVocaData) mItemList.get(mCurItem);
+            }
+            else {
+                mCurItem = 0;
+                mCurItemInChapter = 0;
+                return null;
+            }
         }
+    }
+
+    public int currentPosition() {
+        return mCurItem;
     }
 
     private void readItemsWithDBReader(ArrayList<RawData> dataList) {

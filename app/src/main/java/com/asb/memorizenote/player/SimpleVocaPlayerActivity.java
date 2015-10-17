@@ -1,20 +1,21 @@
 package com.asb.memorizenote.player;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.asb.memorizenote.Constants.*;
 import com.asb.memorizenote.MemorizeNoteApplication;
 import com.asb.memorizenote.R;
 import com.asb.memorizenote.data.SimpleVocaData;
-import com.asb.memorizenote.data.apater.AbstractAdapter;
-import com.asb.memorizenote.data.reader.DBReader;
 import com.asb.memorizenote.player.adapter.SimpleVocaAdapter;
+
+import java.util.ArrayList;
 
 /**
  * Created by azureskybox on 15. 10. 13.
@@ -23,6 +24,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
     TextView mWordView;
     TextView mMeaningView;
+    ArrayList<Boolean> mMeaningDismissList;
 
     SimpleVocaAdapter mAdapter;
 
@@ -36,11 +38,32 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
         mWordView = (TextView)content.findViewById(R.id.simple_voca_player_word);
         mMeaningView = (TextView)content.findViewById(R.id.simple_voca_player_meaning);
+        mMeaningView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int curPosition = mAdapter.currentPosition();
+                boolean itemDismiss = mMeaningDismissList.get(curPosition);
+
+                if (itemDismiss) {
+                    mMeaningView.setTextColor(Color.WHITE);
+                } else {
+                    mMeaningView.setTextColor(Color.BLACK);
+                }
+                mMeaningDismissList.set(curPosition, !itemDismiss);
+            }
+        });
+        mMeaningView.setTextColor(Color.BLACK);
 
         mAdapter = (SimpleVocaAdapter)((MemorizeNoteApplication) getApplication()).getDataAdpaterManager().getItemListAdapter(mBookName);
 
+        mMeaningDismissList = new ArrayList<>();
+        int itemCount = mAdapter.getCount();
+        for(int i=0; i<itemCount; i++)
+            mMeaningDismissList.add(true);
+
         SimpleVocaData data = mAdapter.first();
         setWordAndMeaning(data.mWord, data.mMeaning);
+        setChapterTitle("Chapter. "+(data.mChapterNum));
     }
 
     @Override
@@ -59,6 +82,13 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
         if(data != null) {
             setWordAndMeaning(data.mWord, data.mMeaning);
+
+            if(mMeaningDismissList.get(mAdapter.currentPosition()))
+                mMeaningView.setTextColor(Color.BLACK);
+            else
+                mMeaningView.setTextColor(Color.WHITE);
+
+            setChapterTitle("Chapter "+(data.mChapterNum));
         }
     }
 
@@ -68,6 +98,13 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
         if(data != null) {
             setWordAndMeaning(data.mWord, data.mMeaning);
+
+            if(mMeaningDismissList.get(mAdapter.currentPosition()))
+                mMeaningView.setTextColor(Color.BLACK);
+            else
+                mMeaningView.setTextColor(Color.WHITE);
+
+            setChapterTitle("Chapter "+(data.mChapterNum));
         }
     }
 
