@@ -54,6 +54,9 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
             case BookType.SIMPLE_VOCA:
                 intent.setClass(context, SimpleVocaPlayerActivity.class);
                 return intent;
+            case BookType.SIMPLE_MEMORIZE:
+                intent.setClass(context, SimpleMemorizePlayerActivity.class);
+                return intent;
             default:
                 return null;
         }

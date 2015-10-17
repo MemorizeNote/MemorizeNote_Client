@@ -21,11 +21,14 @@ public class Constants {
     public static class BookType {
         public static final int NONE = -1;
         public static final int SIMPLE_VOCA = 0;
+        public static final int SIMPLE_MEMORIZE = 1;
         public static final int NAME_LIST_DATA = 9999;
 
         public static int getType(String typeName) {
             if(typeName.equals("SimpleVoca"))
                 return SIMPLE_VOCA;
+            else if(typeName.equals("SimpleMemorize"))
+                return SIMPLE_MEMORIZE;
             else
                 return NONE;
         }
@@ -33,6 +36,7 @@ public class Constants {
         public static boolean isValidType(int dataType) {
             switch(dataType) {
                 case SIMPLE_VOCA:
+                case SIMPLE_MEMORIZE:
                 case NAME_LIST_DATA:
                     return true;
                 default:

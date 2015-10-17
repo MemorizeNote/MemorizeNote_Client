@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.asb.memorizenote.Constants;
 import com.asb.memorizenote.data.apater.AbstractAdapter;
+import com.asb.memorizenote.player.adapter.SimpleMemorizeAdapter;
 import com.asb.memorizenote.player.adapter.SimpleVocaAdapter;
 
 import java.io.File;
@@ -24,9 +25,13 @@ public class Utils {
     }
 
     public static AbstractAdapter getAdapter(Context context, int bookType) {
+        MNLog.d("getAdapter, bookType="+bookType);
+
         switch(bookType) {
             case Constants.BookType.SIMPLE_VOCA:
                 return new SimpleVocaAdapter(context);
+            case Constants.BookType.SIMPLE_MEMORIZE:
+                return new SimpleMemorizeAdapter(context);
             default:
                 return null;
         }

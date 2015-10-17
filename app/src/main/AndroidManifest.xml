@@ -21,6 +21,9 @@
         <activity
             android:name=".player.SimpleVocaPlayerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".player.SimpleMemorizePlayerActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
