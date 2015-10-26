@@ -55,8 +55,10 @@ public class FileUpdateActivity extends BaseActivity implements AbstractAdapter.
             case R.id.action_select_files:
                 ArrayList<File> selectedFileList = new ArrayList<File>();
                 for(UpdateFileData data : mDataList) {
-                    if(data.mSelected)
+                    if(data.mSelected) {
+                        MNLog.d(data.mFileName);
                         selectedFileList.add(data.mFile);
+                    }
                 }
 
                 showProgress("Updating...");

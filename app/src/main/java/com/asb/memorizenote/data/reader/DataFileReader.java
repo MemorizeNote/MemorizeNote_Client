@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.asb.memorizenote.Constants;
+import com.asb.memorizenote.utils.MNLog;
 import com.asb.memorizenote.utils.Utils;
 
 import java.io.BufferedReader;
@@ -60,6 +61,13 @@ public class DataFileReader extends AbstractReader {
     @Override
     public void readAll() {
         boolean sendHeader = false;
+
+        boolean multipleLineStart = false;
+        boolean multipleLineEnd = false;
+        int multipleLineStartIdx = 0;
+        String mergedMultipleLine = "";
+
+        RawData convertedRawData = null;
         String dataName = null;
         int dataType = Constants.BookType.NONE;
 
@@ -92,46 +100,63 @@ public class DataFileReader extends AbstractReader {
 
                         String[] split_string = rawData.split(";");
 
-                        RawData convertedRawData = new RawData();
-
-                        int rawDataLength = split_string.length;
-                        switch(rawDataLength) {
-                            case 15:
-                                convertedRawData.mRawData15 = split_string[14];
-                            case 14:
-                                convertedRawData.mRawData14 = split_string[13];
-                            case 13:
-                                convertedRawData.mRawData13 = split_string[12];
-                            case 12:
-                                convertedRawData.mRawData12 = split_string[11];
-                            case 11:
-                                convertedRawData.mRawData11 = split_string[10];
-                            case 10:
-                                convertedRawData.mRawData10 = split_string[9];
-                            case 9:
-                                convertedRawData.mRawData09 = split_string[8];
-                            case 8:
-                                convertedRawData.mRawData08 = split_string[7];
-                            case 7:
-                                convertedRawData.mRawData07 = split_string[6];
-                            case 6:
-                                convertedRawData.mRawData06 = split_string[5];
-                            case 5:
-                                convertedRawData.mRawData05 = split_string[4];
-                            case 4:
-                                convertedRawData.mRawData04 = split_string[3];
-                            case 3:
-                                convertedRawData.mRawData03 = split_string[2];
-                            case 2:
-                                convertedRawData.mRawData02 = split_string[1];
-                            case 1:
-                                convertedRawData.mRawData01 = split_string[0];
-                                break;
+                        if(multipleLineStart) {
+                            if(rawData.startsWith(";") && split_string.length > 0 && split_string[1].equals("##" + Constants.MetaData.KEY_MULTIPLE_LINE_END))
+                                multipleLineEnd = true;
+                            else {
+                                mergedMultipleLine += "\n" + rawData;
+                                continue;
+                            }
                         }
+
+                        if(convertedRawData == null) {
+                            convertedRawData = new RawData();
+
+                            for (String string : split_string) {
+                                if (string.equals("##" + Constants.MetaData.KEY_MULTIPLE_LINE_START)) {
+                                    multipleLineStart = true;
+                                }
+                            }
+                        }
+
+                        int dataStartIdx = 0;
+                        int dataEndIdx = split_string.length;
+                        int convertedIdx = 0;
+
+                        if(multipleLineStart && !multipleLineEnd) {
+                            multipleLineStartIdx = dataEndIdx-1;
+                            dataEndIdx -= 1;
+                        }
+                        else if(multipleLineStart && multipleLineEnd) {
+                            convertedRawData.mRawDataArr[multipleLineStartIdx] = mergedMultipleLine;
+                            multipleLineStart = false;
+                            dataStartIdx += 1;
+                            convertedIdx = multipleLineStartIdx + 1;
+                        }
+
+                        for(int i=dataStartIdx; i<dataEndIdx; i++) {
+                            convertedRawData.mRawDataArr[convertedIdx] = split_string[i];
+                            ++convertedIdx;
+                        }
+
+                        if(multipleLineStart)
+                            continue;
+
+                        convertedRawData.flattenData();
+
+                        MNLog.d(">>"+(String)convertedRawData.mRawData01+(String)convertedRawData.mRawData02+(String)convertedRawData.mRawData03);
 
                         rawDataList.add(convertedRawData);
 
                         mListener.onItem(convertedRawData);
+
+                        if(multipleLineEnd){
+                            multipleLineStart = false;
+                            multipleLineEnd = false;
+                            multipleLineStartIdx = 0;
+                        }
+
+                        convertedRawData = null;
                     }
                 }
 

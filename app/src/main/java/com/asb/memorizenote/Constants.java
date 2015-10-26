@@ -16,6 +16,8 @@ public class Constants {
     public static class MetaData {
         public static final String KEY_NAME = "name";
         public static final String KEY_TYPE = "type";
+        public static final String KEY_MULTIPLE_LINE_START = "multipleLineStart";
+        public static final String KEY_MULTIPLE_LINE_END = "multipleLineEnd";
     }
 
     public static class BookType {
