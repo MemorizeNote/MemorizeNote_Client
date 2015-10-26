@@ -73,6 +73,7 @@ public class Constants {
     public static class AdapterManagerFlags {
         public static final int UPDATE_FROM_FILES = 0;
         public static final int UPDATE_FROM_HTTP = 1;
+        public static final int UPDATE_FROM_LIST = 2;
     }
 
     public static class DB {
@@ -114,6 +115,10 @@ public class Constants {
 
         public static class MainActivity {
             public static final int UPDATE_LIST = 10;
+        }
+
+        public static class FileUpdateActivity {
+            public static final int INIT_FILE_LIST = 20;
         }
     }
 

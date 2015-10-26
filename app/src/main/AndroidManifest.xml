@@ -19,6 +19,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.update.FileUpdateActivity"/>
+
+        <activity
             android:name=".player.SimpleVocaPlayerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity

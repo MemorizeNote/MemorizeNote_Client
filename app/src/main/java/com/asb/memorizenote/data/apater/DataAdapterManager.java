@@ -87,24 +87,33 @@ public class DataAdapterManager implements AbstractAdapter.OnDataLoadListener{
     }
 
     public void update(int updateFrom, AbstractAdapter.OnDataLoadListener listener) {
+        update(updateFrom, listener, null);
+    }
+
+    public void update(int updateFrom, AbstractAdapter.OnDataLoadListener listener, ArrayList<File> fileList) {
         mListener = listener;
 
         switch(updateFrom) {
             case AdapterManagerFlags.UPDATE_FROM_FILES:
                 mCurrentState = IN_UPDATE_FROM_FILES;
 
-                mUpdateFileList = new ArrayList<File>();
+                if(fileList == null) {
+                    mUpdateFileList = new ArrayList<File>();
 
-                File dataFolder = new File(Constants.FOLDER_PATH);
-                File[] dataFileList = dataFolder.listFiles();
+                    File dataFolder = new File(Constants.FOLDER_PATH);
+                    File[] dataFileList = dataFolder.listFiles();
 
-                for(File dataFile : dataFileList) {
-                    Log.d("MN", dataFile.getName());
+                    for (File dataFile : dataFileList) {
+                        Log.d("MN", dataFile.getName());
 
-                    if (Utils.isExpectedFileType(dataFile, "txt")) {
-                        mUpdateFileList.add(dataFile);
+                        if (Utils.isExpectedFileType(dataFile, "txt")) {
+                            mUpdateFileList.add(dataFile);
+                        }
                     }
                 }
+                else
+                    mUpdateFileList = fileList;
+
                 updateFromFiles();
                 break;
             case AdapterManagerFlags.UPDATE_FROM_HTTP:

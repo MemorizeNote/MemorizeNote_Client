@@ -21,6 +21,7 @@ import com.asb.memorizenote.data.db.MemorizeDBHelper;
 import com.asb.memorizenote.data.reader.DBReader;
 import com.asb.memorizenote.player.BasePlayerActivity;
 import com.asb.memorizenote.ui.BaseActivity;
+import com.asb.memorizenote.ui.update.FileUpdateActivity;
 
 import java.io.File;
 
@@ -65,9 +66,10 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
                 break;
             case R.id.action_update_data:
                 mIsUpdating = true;
-                showProgress("Updating...");
-
-                mDataAdapterManager.update(AdapterManagerFlags.UPDATE_FROM_FILES, this);
+//                showProgress("Updating...");
+//
+//                mDataAdapterManager.update(AdapterManagerFlags.UPDATE_FROM_FILES, this);
+                startActivityForResult(new Intent(this, FileUpdateActivity.class), 0);
                 break;
             case R.id.action_dump:
                 MemorizeDBHelper helper = new MemorizeDBHelper(getApplicationContext());
@@ -84,6 +86,12 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         Intent playerLaunchIntent = BasePlayerActivity.getLaunchingIntent(this, nameData.mName, nameData.mDataType, 0, nameData.mChapterNum);
 
         startActivity(playerLaunchIntent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mIsUpdating = false;
+        mMainListAdapter.notifyDataSetChanged();
     }
 
     @Override
