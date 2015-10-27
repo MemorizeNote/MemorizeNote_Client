@@ -27,9 +27,22 @@
         <activity
             android:name=".player.SimpleMemorizePlayerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <receiver
+            android:name=".widget.libraryseat.LibrarySeatsWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.asb.memorizenote.UPDATE_WIDGET"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/library_seats_widget_provider" />
+        </receiver>
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>

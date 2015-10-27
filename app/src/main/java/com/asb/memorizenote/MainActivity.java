@@ -22,6 +22,7 @@ import com.asb.memorizenote.data.reader.DBReader;
 import com.asb.memorizenote.player.BasePlayerActivity;
 import com.asb.memorizenote.ui.BaseActivity;
 import com.asb.memorizenote.ui.update.FileUpdateActivity;
+import com.asb.memorizenote.widget.libraryseat.LibrarySeatParser;
 
 import java.io.File;
 
@@ -74,6 +75,9 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
             case R.id.action_dump:
                 MemorizeDBHelper helper = new MemorizeDBHelper(getApplicationContext());
                 helper.dump();
+                break;
+            case R.id.action_test_seat:
+                LibrarySeatParser parser = new LibrarySeatParser();
                 break;
         }
 

@@ -6,4 +6,6 @@
     <string name="action_update_data">Update Data</string>
     <string name="action_dump">Dump</string>
     <string name="action_select_files">Select Files</string>
+
+    <string name="action_test_seat">Test Seat</string>
 </resources>

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.asb.memorizenote.Constants.*;
 import com.asb.memorizenote.R;
 import com.asb.memorizenote.ui.BaseActivity;
+import com.asb.memorizenote.utils.MNLog;
 
 /**
  * Created by azureskybox on 15. 10. 13.
@@ -81,13 +82,19 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
         mGestureDetector = new GestureDetector(getApplicationContext(), this, null);
 
         mChapterWrapper = (LinearLayout)findViewById(R.id.base_player_chapter_wrapper);
-        mChapterTitle = (TextView)findViewById(R.id.base_player_chapter_title);
         mChapterWrapper.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 mTouchStartOnChapter = true;
                 mGestureDetector.onTouchEvent(event);
-                return true;
+                return false;
+            }
+        });
+        mChapterTitle = (TextView)findViewById(R.id.base_player_chapter_title);
+        mChapterTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MNLog.d("!@#!@#!@#!@#");
             }
         });
 

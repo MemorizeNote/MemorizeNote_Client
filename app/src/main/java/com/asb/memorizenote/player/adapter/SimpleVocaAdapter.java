@@ -111,6 +111,10 @@ public class SimpleVocaAdapter extends AbstractAdapter {
         mListener.onCompleted();
     }
 
+    public SimpleVocaData current() {
+        return null;
+    }
+
     public SimpleVocaData first() {
         mCurChapter = 0;
         mCurItem = 0;
@@ -163,6 +167,10 @@ public class SimpleVocaAdapter extends AbstractAdapter {
                 return null;
             }
         }
+    }
+
+    public SimpleVocaData jumpToChapter(int chapter) {
+        return null;
     }
 
     public int currentPosition() {
