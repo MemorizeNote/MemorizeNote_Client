@@ -154,6 +154,7 @@ public class DataFileReader extends AbstractReader {
                             multipleLineStart = false;
                             multipleLineEnd = false;
                             multipleLineStartIdx = 0;
+                            mergedMultipleLine = "";
                         }
 
                         convertedRawData = null;

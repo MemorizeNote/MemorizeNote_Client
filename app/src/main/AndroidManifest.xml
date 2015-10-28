@@ -28,6 +28,10 @@
             android:name=".player.SimpleMemorizePlayerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
+        <activity
+            android:name=".widget.libraryseat.LibrarySeatsViewActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
         <receiver
             android:name=".widget.libraryseat.LibrarySeatsWidgetProvider">
             <intent-filter>

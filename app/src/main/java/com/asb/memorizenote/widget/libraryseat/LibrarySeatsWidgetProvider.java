@@ -39,6 +39,8 @@ public class LibrarySeatsWidgetProvider extends AppWidgetProvider {
                     PendingIntent refreshIntent = PendingIntent.getBroadcast(mContext, 0, new Intent("com.asb.memorizenote.UPDATE_WIDGET"), PendingIntent.FLAG_ONE_SHOT);
                     remoteViews.setOnClickPendingIntent(R.id.widget_library_seats_refresh, refreshIntent);
 
+                    remoteViews.setOnClickPendingIntent(R.id.widget_library_seats_view, PendingIntent.getActivity(mContext, 0, new Intent(mContext, LibrarySeatsViewActivity.class), 0));
+
                     remoteViews.setTextViewText(R.id.widget_library_seats_total, total);
                     remoteViews.setTextViewText(R.id.widget_library_seats_remain, remain);
                     remoteViews.setTextViewText(R.id.widget_library_seats_reserved, reserved);
@@ -61,6 +63,8 @@ public class LibrarySeatsWidgetProvider extends AppWidgetProvider {
         PendingIntent refreshIntent = PendingIntent.getBroadcast(context, 0, new Intent("android.appwidget.action.APPWIDGET_UPDATE"), PendingIntent.FLAG_ONE_SHOT);
         remoteViews.setOnClickPendingIntent(R.id.widget_library_seats_refresh, refreshIntent);
 
+        remoteViews.setOnClickPendingIntent(R.id.widget_library_seats_view, PendingIntent.getActivity(mContext, 0, new Intent(context, LibrarySeatsViewActivity.class), 0));
+
         remoteViews.setTextViewText(R.id.widget_library_seats_total, "0");
         remoteViews.setTextViewText(R.id.widget_library_seats_next, "0");
         remoteViews.setTextViewText(R.id.widget_library_seats_remain, "0");
@@ -70,7 +74,7 @@ public class LibrarySeatsWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         mContext = context;
         mAppWidgetManager = AppWidgetManager.getInstance(context.getApplicationContext());
         mWidgetIds = mAppWidgetManager.getAppWidgetIds(new ComponentName(context, getClass()));
@@ -83,6 +87,8 @@ public class LibrarySeatsWidgetProvider extends AppWidgetProvider {
 
                 PendingIntent refreshIntent = PendingIntent.getBroadcast(mContext, 0, new Intent("com.asb.memorizenote.UPDATE_WIDGET"), PendingIntent.FLAG_ONE_SHOT);
                 remoteViews.setOnClickPendingIntent(R.id.widget_library_seats_refresh, refreshIntent);
+
+                remoteViews.setOnClickPendingIntent(R.id.widget_library_seats_view, PendingIntent.getActivity(mContext, 0, new Intent(context, LibrarySeatsViewActivity.class), 0));
 
                 remoteViews.setTextViewText(R.id.widget_library_seats_total, total);
                 remoteViews.setTextViewText(R.id.widget_library_seats_remain, remain);
