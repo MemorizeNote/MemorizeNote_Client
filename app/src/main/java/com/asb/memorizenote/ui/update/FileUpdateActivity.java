@@ -5,6 +5,9 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 import com.asb.memorizenote.Constants;
@@ -35,6 +38,14 @@ public class FileUpdateActivity extends BaseActivity implements AbstractAdapter.
         setContentView(R.layout.activity_file_update);
 
         mFileListView = (ListView)findViewById(R.id.file_update_main);
+        mFileListView.setFocusable(true);
+        mFileListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ((CheckBox)view.findViewById(R.id.file_update_file_list_item_select)).setChecked(true);
+                ((CheckBox)view.findViewById(R.id.file_update_file_list_item_select)).setTag(position);
+            }
+        });
 
         showProgress("Loading...");
         Thread t = new Thread(new CheckFileListRunnable());

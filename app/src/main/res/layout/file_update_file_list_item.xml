@@ -6,13 +6,16 @@
     <TextView
         android:id="@+id/file_update_file_list_item_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"/>
+        android:layout_height="55dp"
+        android:layout_alignParentLeft="true"
+        android:textSize="25dp"
+        android:textColor="#FF000000"
+        android:gravity="center"/>
 
     <CheckBox
         android:id="@+id/file_update_file_list_item_select"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_alignParentRight="true"/>
 
 </RelativeLayout>
