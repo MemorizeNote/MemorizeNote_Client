@@ -30,7 +30,7 @@ public class LibrarySeatsWidgetProvider extends AppWidgetProvider {
             mAppWidgetManager = AppWidgetManager.getInstance(context.getApplicationContext());
             mWidgetIds = mAppWidgetManager.getAppWidgetIds(new ComponentName(context, getClass()));
 
-            LibrarySeatParser parser = new LibrarySeatParser();
+            LibrarySeatParser parser = new LibrarySeatParser(LibrarySeatParser.LIB_TYPE_PYEONGCHON);
             parser.startParsing(new LibrarySeatParser.OnLibrarySeatsParsedListener() {
                 @Override
                 public void onParsed(String total, String current, String remain, String reserved, String next) {
@@ -63,7 +63,7 @@ public class LibrarySeatsWidgetProvider extends AppWidgetProvider {
         PendingIntent refreshIntent = PendingIntent.getBroadcast(context, 0, new Intent("android.appwidget.action.APPWIDGET_UPDATE"), PendingIntent.FLAG_ONE_SHOT);
         remoteViews.setOnClickPendingIntent(R.id.widget_library_seats_refresh, refreshIntent);
 
-        remoteViews.setOnClickPendingIntent(R.id.widget_library_seats_view, PendingIntent.getActivity(mContext, 0, new Intent(context, LibrarySeatsViewActivity.class), 0));
+        remoteViews.setOnClickPendingIntent(R.id.widget_library_seats_view, PendingIntent.getActivity(context, 0, new Intent(context, LibrarySeatsViewActivity.class), 0));
 
         remoteViews.setTextViewText(R.id.widget_library_seats_total, "0");
         remoteViews.setTextViewText(R.id.widget_library_seats_next, "0");
@@ -79,7 +79,7 @@ public class LibrarySeatsWidgetProvider extends AppWidgetProvider {
         mAppWidgetManager = AppWidgetManager.getInstance(context.getApplicationContext());
         mWidgetIds = mAppWidgetManager.getAppWidgetIds(new ComponentName(context, getClass()));
 
-        LibrarySeatParser parser = new LibrarySeatParser();
+        LibrarySeatParser parser = new LibrarySeatParser(LibrarySeatParser.LIB_TYPE_PYEONGCHON);
         parser.startParsing(new LibrarySeatParser.OnLibrarySeatsParsedListener() {
             @Override
             public void onParsed(String total, String current, String remain, String reserved, String next) {

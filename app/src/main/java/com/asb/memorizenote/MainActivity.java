@@ -77,7 +77,29 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
                 helper.dump();
                 break;
             case R.id.action_test_seat:
-                LibrarySeatParser parser = new LibrarySeatParser();
+                LibrarySeatParser parser = new LibrarySeatParser(LibrarySeatParser.LIB_TYPE_PYEONGCHON);
+                parser.startParsing(new LibrarySeatParser.OnLibrarySeatsParsedListener() {
+                    @Override
+                    public void onParsed(String total, String current, String remain, String reserved, String next) {
+
+                    }
+                });
+
+                parser = new LibrarySeatParser(LibrarySeatParser.LIB_TYPE_SANBON);
+                parser.startParsing(new LibrarySeatParser.OnLibrarySeatsParsedListener() {
+                    @Override
+                    public void onParsed(String total, String current, String remain, String reserved, String next) {
+
+                    }
+                });
+
+                parser = new LibrarySeatParser(LibrarySeatParser.LIB_TYPE_JOONGANG);
+                parser.startParsing(new LibrarySeatParser.OnLibrarySeatsParsedListener() {
+                    @Override
+                    public void onParsed(String total, String current, String remain, String reserved, String next) {
+
+                    }
+                });
                 break;
         }
 
