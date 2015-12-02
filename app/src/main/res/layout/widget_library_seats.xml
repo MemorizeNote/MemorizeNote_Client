@@ -29,6 +29,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/widget_library_seats_info_wrapper"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.7"
