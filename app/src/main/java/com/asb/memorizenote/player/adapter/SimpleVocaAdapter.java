@@ -169,6 +169,53 @@ public class SimpleVocaAdapter extends AbstractAdapter {
         }
     }
 
+    public SimpleVocaData nextChapter() {
+        MNLog.d("before nextChapter, mCurItem="+mCurItem+", mCurItemInChapter="+mCurItemInChapter+", mCurChapter="+mCurChapter+", totalItemInChapter="+mTotalItemPerChapter.get(mCurChapter));
+
+        //현재 쳅터가 마지막이라면, 이동하지 않는다.
+        if(mCurChapter >= mTotalChapter-1)
+            return null;
+
+        //현재 쳅터에서 아이템이 몇 개 남았는지 확인한다.
+        int totalItemInCurChapter = mTotalItemPerChapter.get(mCurChapter);
+        int restItemInCurChapter = totalItemInCurChapter - mCurItemInChapter;
+
+        MNLog.d("In chapter, total="+totalItemInCurChapter+", remain="+restItemInCurChapter);
+
+        //현재 쳅터의 마지막 아이템에서 다음 쳅터의 첫 아이템으로 이동하기 위해 아이템 인덱스를 변경한다.
+        mCurItem += restItemInCurChapter;
+
+        //쳅터 이동을 위해 쳅터 인덱스를 변경한다.
+        ++mCurChapter;
+        mCurItemInChapter = 0;
+
+        MNLog.d("after nextChapter, mCurItem="+mCurItem+", mCurItemInChapter="+mCurItemInChapter+", mCurChapter="+mCurChapter+", totalItemInChapter="+mTotalItemPerChapter.get(mCurChapter));
+
+        return (SimpleVocaData) mItemList.get(mCurItem);
+    }
+
+    public SimpleVocaData previousChapter() {
+        MNLog.d("before previousChapter, mCurItem="+mCurItem+", mCurItemInChapter="+mCurItemInChapter+", mCurChapter="+mCurChapter+", totalItemInChapter="+mTotalItemPerChapter.get(mCurChapter));
+
+        //처음 챕터라면 종료한다.
+        if(mCurChapter <= 0)
+            return null;
+
+        //현재 챕터의 첫 인덱스로 이동한다.
+        mCurItem -= mCurItemInChapter;
+
+        //이전 쳅터의 인덱스로 변경한다.
+        --mCurChapter;
+        mCurItemInChapter = 0;
+
+        //현재 챕터의 첫 아이템 인덱스에서 이전 챕터의 첫 아이템 인덱스로 변경한다.
+        mCurItem -= mTotalItemPerChapter.get(mCurChapter);
+
+        MNLog.d("after previousChapter, mCurItem="+mCurItem+", mCurItemInChapter="+mCurItemInChapter+", mCurChapter="+mCurChapter+", totalItemInChapter="+mTotalItemPerChapter.get(mCurChapter));
+
+        return (SimpleVocaData) mItemList.get(mCurItem);
+    }
+
     public SimpleVocaData jumpToChapter(int chapter) {
         return null;
     }

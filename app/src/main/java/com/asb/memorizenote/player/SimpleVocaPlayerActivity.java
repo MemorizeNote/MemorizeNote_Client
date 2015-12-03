@@ -72,8 +72,46 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
                 mMeaningView.setTextColor(Color.BLACK);
 
                 int itemCount = mAdapter.getCount();
-                for(int i=0; i<itemCount; i++)
+                for (int i = 0; i < itemCount; i++)
                     mMeaningDismissList.set(i, true);
+            }
+        });
+        setExtraButton(">>", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SimpleVocaData data = mAdapter.nextChapter();
+
+                if(data != null) {
+                    setWordAndMeaning(data.mWord, data.mMeaning);
+
+                    if(mMeaningDismissList.get(mAdapter.currentPosition()))
+                        mMeaningView.setTextColor(Color.BLACK);
+                    else
+                        mMeaningView.setTextColor(Color.WHITE);
+
+                    setChapterTitle("Chapter. "+(data.mChapterNum));
+                }
+                else
+                    showToast("마지막 챕터 입니다.");
+            }
+        });
+        setExtraButton("<<", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SimpleVocaData data = mAdapter.previousChapter();
+
+                if(data != null) {
+                    setWordAndMeaning(data.mWord, data.mMeaning);
+
+                    if(mMeaningDismissList.get(mAdapter.currentPosition()))
+                        mMeaningView.setTextColor(Color.BLACK);
+                    else
+                        mMeaningView.setTextColor(Color.WHITE);
+
+                    setChapterTitle("Chapter. "+(data.mChapterNum));
+                }
+                else
+                    showToast("첫 챕터 입니다.");
             }
         });
     }

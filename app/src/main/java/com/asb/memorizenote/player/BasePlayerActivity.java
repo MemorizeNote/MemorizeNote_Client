@@ -36,9 +36,12 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     protected LinearLayout mContentWrapper = null;
 
     protected LinearLayout mExtraButtonsWrapper = null;
+    private static int MAX_EXTRA_BTN_NUM = 3;
+    private int mCurrentExtraBtnNum = 0;
     protected Button mExtraButton01 = null;
     protected Button mExtraButton02 = null;
     protected Button mExtraButton03 = null;
+    private Button[] mExtraButtons = new Button[3];
 
     private GestureDetector mGestureDetector;
     private boolean mTouchStartOnChapter;
@@ -103,10 +106,15 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
         mExtraButtonsWrapper = (LinearLayout)findViewById(R.id.base_player_extra_buttons_wrapper);
         mExtraButton01 = (Button)findViewById(R.id.base_player_extra_btn_1);
+        mExtraButton01.setVisibility(View.INVISIBLE);
         mExtraButton02 = (Button)findViewById(R.id.base_player_extra_btn_2);
         mExtraButton02.setVisibility(View.INVISIBLE);
         mExtraButton03 = (Button)findViewById(R.id.base_player_extra_btn_3);
         mExtraButton03.setVisibility(View.INVISIBLE);
+
+        mExtraButtons[0] = mExtraButton01;
+        mExtraButtons[1] = mExtraButton02;
+        mExtraButtons[2] = mExtraButton03;
     }
 
     @Override
@@ -198,7 +206,17 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     }
 
     protected void setExtraButton(String name, View.OnClickListener listener) {
-        mExtraButton01.setText(name);
-        mExtraButton01.setOnClickListener(listener);
+//        mExtraButton01.setText(name);
+//        mExtraButton01.setOnClickListener(listener);
+
+        if(mCurrentExtraBtnNum >= MAX_EXTRA_BTN_NUM)
+            return;
+
+        Button targetExtraButton = mExtraButtons[mCurrentExtraBtnNum];
+        targetExtraButton.setText(name);
+        targetExtraButton.setOnClickListener(listener);
+        targetExtraButton.setVisibility(View.VISIBLE);
+
+        ++mCurrentExtraBtnNum;
     }
 }
