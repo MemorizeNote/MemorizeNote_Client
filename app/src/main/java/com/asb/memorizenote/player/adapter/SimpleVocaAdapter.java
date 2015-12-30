@@ -120,7 +120,7 @@ public class SimpleVocaAdapter extends AbstractAdapter {
     }
 
     public SimpleVocaData current() {
-        return null;
+        return (SimpleVocaData) mItemList.get(mIsRandomized?mRandomizedIdx[mCurItem]:mCurItem);
     }
 
     public SimpleVocaData first() {
@@ -128,7 +128,7 @@ public class SimpleVocaAdapter extends AbstractAdapter {
         mCurItem = 0;
         mCurItemInChapter = 0;
         
-        return (SimpleVocaData) mItemList.get(mIsRandomized?mRandomizedIdx[mCurItem]:mCurItem);
+        return current();
     }
 
     public SimpleVocaData next() {
@@ -138,13 +138,13 @@ public class SimpleVocaAdapter extends AbstractAdapter {
         MNLog.d("next, mCurItem="+mCurItem+", mCurItemInChapter="+mCurItemInChapter+"mCurChapter="+mCurChapter+", totalItemInChapter="+mTotalItemPerChapter.get(mCurChapter));
 
         if(mCurItemInChapter < mTotalItemPerChapter.get(mCurChapter))
-            return (SimpleVocaData) mItemList.get(mIsRandomized?mRandomizedIdx[mCurItem]:mCurItem);
+            return current();
         else {
             if(mCurChapter < mTotalChapter-1) {
                 ++mCurChapter;
                 mCurItemInChapter = 0;
 
-                return (SimpleVocaData) mItemList.get(mIsRandomized?mRandomizedIdx[mCurItem]:mCurItem);
+                return current();
             }
             else {
                 --mCurItem;
@@ -161,13 +161,13 @@ public class SimpleVocaAdapter extends AbstractAdapter {
         MNLog.d("previous, mCurItem="+mCurItem+", mCurItemInChapter="+mCurItemInChapter+"mCurChapter="+mCurChapter+", totalItemInChapter="+mTotalItemPerChapter.get(mCurChapter));
 
         if(mCurItemInChapter >= 0)
-            return (SimpleVocaData) mItemList.get(mIsRandomized?mRandomizedIdx[mCurItem]:mCurItem);
+            return current();
         else {
             if(mCurChapter > 0) {
                 --mCurChapter;
                 mCurItemInChapter = mTotalItemPerChapter.get(mCurChapter)-1;
 
-                return (SimpleVocaData) mItemList.get(mIsRandomized?mRandomizedIdx[mCurItem]:mCurItem);
+                return current();
             }
             else {
                 mCurItem = 0;
@@ -199,7 +199,7 @@ public class SimpleVocaAdapter extends AbstractAdapter {
 
         MNLog.d("after nextChapter, mCurItem="+mCurItem+", mCurItemInChapter="+mCurItemInChapter+", mCurChapter="+mCurChapter+", totalItemInChapter="+mTotalItemPerChapter.get(mCurChapter));
 
-        return (SimpleVocaData) mItemList.get(mCurItem);
+        return current();
     }
 
     public SimpleVocaData previousChapter() {
@@ -221,7 +221,7 @@ public class SimpleVocaAdapter extends AbstractAdapter {
 
         MNLog.d("after previousChapter, mCurItem="+mCurItem+", mCurItemInChapter="+mCurItemInChapter+", mCurChapter="+mCurChapter+", totalItemInChapter="+mTotalItemPerChapter.get(mCurChapter));
 
-        return (SimpleVocaData) mItemList.get(mCurItem);
+        return current();
     }
 
     public SimpleVocaData jumpToChapter(int chapter) {
@@ -339,7 +339,6 @@ public class SimpleVocaAdapter extends AbstractAdapter {
 
             SimpleVocaData convertedData = new SimpleVocaData();
             convertedData.mWord = (String)data.mRawData01;
-//            convertedData.mMeaning = (String)data.mRawData02;
             convertedData.mMeaning = "";
             if(data.mRawData02 != null) {
                 convertedData.mMeaning += data.mRawData02;

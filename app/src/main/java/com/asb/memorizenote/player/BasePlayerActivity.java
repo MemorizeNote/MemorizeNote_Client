@@ -23,10 +23,18 @@ import java.util.HashMap;
  */
 public abstract class BasePlayerActivity extends BaseActivity implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
     //From http://pulsebeat.tistory.com/27
-    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MIN_DISTANCE_X = 100;
+    private static final int SWIPE_MIN_DISTANCE_Y = 40;
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
+    private enum TouchDirection {
+        NONE,
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN
+    }
     protected enum TouchType {
         ONE_POINT,
         TWO_POINT,
@@ -124,35 +132,63 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        MNLog.d("onFling");
+        MNLog.d("e1.x="+e1.getX()+", e1.y"+e1.getY());
+        MNLog.d("e2.x="+e2.getX()+", e2.y"+e2.getY());
+        MNLog.d("vx="+velocityX+", vy="+velocityY);
         //From http://pulsebeat.tistory.com/27
         setTouchType();
 
         try {
-            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
-                return false;
+            TouchDirection direction = TouchDirection.NONE;
 
-            // right to left swipe
-            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                if(mTouchType == TouchType.ONE_POINT)
-                    onNextContent();
-                else if(mTouchType == TouchType.TWO_POINT)
-                    onNextChapter();
+            float distanceX = Math.abs(e1.getX() - e2.getX());
+            float distanceY = Math.abs(e1.getY() - e2.getY());
+
+            //left or right
+            if(distanceX >= distanceY*2) {
+                if(velocityX > 0 && distanceX > SWIPE_MIN_DISTANCE_X && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    direction = TouchDirection.RIGHT;
+                }
+                else if(velocityX < 0 && distanceX > SWIPE_MIN_DISTANCE_X && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    direction = TouchDirection.LEFT;
+                }
             }
-            // left to right swipe
-            else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                if(mTouchType == TouchType.ONE_POINT)
-                    onPreviousContent();
-                else if(mTouchType == TouchType.TWO_POINT)
-                    onPreviousChapter();
+            //up or down
+            else {
+                if(velocityY > 0 && distanceX > SWIPE_MIN_DISTANCE_Y && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+                    direction = TouchDirection.DOWN;
+                }
+                else if(velocityY < 0 && distanceX > SWIPE_MIN_DISTANCE_Y && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+                    direction = TouchDirection.UP;
+                }
             }
-            // down to up swipe
-            else if (e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
-            }
-            // up to down swipe
-            else if (e2.getY() - e1.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+
+            MNLog.d(""+direction);
+
+            switch (direction) {
+                case RIGHT:
+                    if(mTouchType == TouchType.ONE_POINT)
+                        onPreviousContent();
+                    else if (mTouchType == TouchType.TWO_POINT)
+                        onPreviousChapter();
+                    break;
+                case LEFT:
+                    if(mTouchType == TouchType.ONE_POINT)
+                        onNextContent();
+                    else if (mTouchType == TouchType.TWO_POINT)
+                        onNextChapter();
+                    break;
+                case UP:
+                    onFlingUp();
+                    break;
+                case DOWN:
+                    onFlingDown();
+                    break;
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
+            return true;
         }
 
         clearTouchType();
@@ -203,7 +239,6 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     }
 
     private void setTouchType() {
-        MNLog.d(""+mPointerMap.size());
         switch (mPointerMap.size()) {
             case 1:
                 mTouchType = TouchType.TWO_POINT;
@@ -226,6 +261,13 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
     abstract protected void onPreviousContent();
     abstract protected void onNextContent();
+
+    protected void onFlingUp() {
+        MNLog.d("onFlingUp");
+    }
+    protected void onFlingDown(){
+        MNLog.d("onFlingDown");
+    }
 
     protected void onSingleTap() {
         MNLog.d("onSingleTap");

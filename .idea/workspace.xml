@@ -32,26 +32,13 @@
       <file leaf-file-name="SimpleVocaPlayerActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/SimpleVocaPlayerActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.7028825">
-              <caret line="32" column="16" selection-start-line="32" selection-start-column="16" selection-end-line="32" selection-end-column="16" />
+            <state vertical-scroll-proportion="1.9323725">
+              <caret line="102" column="59" selection-start-line="102" selection-start-column="59" selection-end-line="102" selection-end-column="59" />
               <folding>
-                <element signature="e#2248#2692#0" expanded="true" />
-                <element signature="e#2691#2692#0" expanded="true" />
-                <element signature="e#2727#3376#0" expanded="true" />
-                <element signature="e#3375#3376#0" expanded="true" />
-                <element signature="e#8882#8883#0" expanded="true" />
-                <element signature="e#8922#8923#0" expanded="true" />
+                <element signature="e#2763#3412#0" expanded="true" />
+                <element signature="e#3411#3412#0" expanded="true" />
+                <element signature="e#3746#3747#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SimpleVocaAdapter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/adapter/SimpleVocaAdapter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -1501,7 +1488,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/TestPlayerActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/xml_border.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/border.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/border.xml" />
@@ -1547,10 +1533,11 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/widget/libraryseat/LibrarySeatsWidgetProvider.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_base_player.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/MainActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/BasePlayerActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/adapter/SimpleVocaAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_simple_voca_player.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/Constants.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/data/SimpleVocaData.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/adapter/SimpleVocaAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/BasePlayerActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/SimpleVocaPlayerActivity.java" />
       </list>
     </option>
@@ -1567,9 +1554,9 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="57" />
-    <option name="y" value="24" />
+    <option name="y" value="-4" />
     <option name="width" value="1863" />
-    <option name="height" value="1056" />
+    <option name="height" value="1084" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -1808,30 +1795,30 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="57" y="24" width="1863" height="1056" extended-state="6" />
+    <frame x="57" y="-4" width="1863" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32939914" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32939914" sideWeight="0.5041322" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32939914" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32939914" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3294766" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32939914" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24958678" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39914164" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1860,13 +1847,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/data/NameListData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="39" selection-start-line="5" selection-start-column="39" selection-end-line="5" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Android/Sdk/sources/android-22/android/database/Cursor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1878,13 +1858,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="35" column="28" selection-start-line="35" selection-start-column="28" selection-end-line="35" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/data/SimpleVocaData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="37" selection-start-line="5" selection-start-column="37" selection-end-line="5" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -2201,14 +2174,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/BasePlayerActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="58" selection-start-line="23" selection-start-column="58" selection-end-line="23" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/ui/BaseActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2227,7 +2192,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_simple_voca_player.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.129032">
+        <state vertical-scroll-proportion="-13.193548">
           <caret line="26" column="34" selection-start-line="26" selection-start-column="26" selection-end-line="26" selection-end-column="34" />
           <folding />
         </state>
@@ -2236,25 +2201,114 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/data/SimpleVocaData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="8" column="35" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/adapter/SimpleVocaAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+          <caret line="291" column="5" selection-start-line="291" selection-start-column="5" selection-end-line="291" selection-end-column="5" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Android/Sdk/sources/android-22/android/view/MotionEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1854" column="23" selection-start-line="1854" selection-start-column="23" selection-end-line="1854" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#141168#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#44913#44921#0" expanded="false" />
+            <element signature="e#50736#50744#0" expanded="false" />
+            <element signature="e#69320#69321#0" expanded="false" />
+            <element signature="e#69355#69356#0" expanded="false" />
+            <element signature="e#70467#70468#0" expanded="false" />
+            <element signature="e#70519#70520#0" expanded="false" />
+            <element signature="e#70594#70595#0" expanded="false" />
+            <element signature="e#70644#70645#0" expanded="false" />
+            <element signature="e#70730#70731#0" expanded="false" />
+            <element signature="e#70781#70782#0" expanded="false" />
+            <element signature="e#71167#71168#0" expanded="false" />
+            <element signature="e#71217#71218#0" expanded="false" />
+            <element signature="e#71536#71537#0" expanded="false" />
+            <element signature="e#71600#71601#0" expanded="false" />
+            <element signature="e#72707#72708#0" expanded="false" />
+            <element signature="e#72760#72761#0" expanded="false" />
+            <element signature="e#72891#72892#0" expanded="false" />
+            <element signature="e#72940#72941#0" expanded="false" />
+            <element signature="e#73973#73974#0" expanded="false" />
+            <element signature="e#74042#74043#0" expanded="false" />
+            <element signature="e#75749#75750#0" expanded="false" />
+            <element signature="e#75830#75831#0" expanded="false" />
+            <element signature="e#78404#78405#0" expanded="false" />
+            <element signature="e#78460#78461#0" expanded="false" />
+            <element signature="e#89231#89232#0" expanded="false" />
+            <element signature="e#89284#89285#0" expanded="false" />
+            <element signature="e#89616#89617#0" expanded="false" />
+            <element signature="e#89671#89672#0" expanded="false" />
+            <element signature="e#90855#90856#0" expanded="false" />
+            <element signature="e#90909#90910#0" expanded="false" />
+            <element signature="e#91247#91248#0" expanded="false" />
+            <element signature="e#91301#91302#0" expanded="false" />
+            <element signature="e#91684#91685#0" expanded="false" />
+            <element signature="e#91739#91740#0" expanded="false" />
+            <element signature="e#107163#107164#0" expanded="false" />
+            <element signature="e#107216#107217#0" expanded="false" />
+            <element signature="e#107414#107415#0" expanded="false" />
+            <element signature="e#107467#107468#0" expanded="false" />
+            <element signature="e#107563#107564#0" expanded="false" />
+            <element signature="e#107614#107615#0" expanded="false" />
+            <element signature="e#126792#126793#0" expanded="false" />
+            <element signature="e#126844#126845#0" expanded="false" />
+            <element signature="e#127123#127124#0" expanded="false" />
+            <element signature="e#127163#127164#0" expanded="false" />
+            <element signature="e#128322#128323#0" expanded="false" />
+            <element signature="e#128361#128362#0" expanded="false" />
+            <element signature="e#139195#139196#0" expanded="false" />
+            <element signature="e#139226#139227#0" expanded="false" />
+            <element signature="e#139457#139458#0" expanded="false" />
+            <element signature="e#139496#139497#0" expanded="false" />
+            <element signature="e#141107#141108#0" expanded="false" />
+            <element signature="e#141158#141159#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/BasePlayerActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="167" column="0" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
+          <folding>
+            <element signature="e#7622#7623#0" expanded="true" />
+            <element signature="e#7650#7651#0" expanded="true" />
+            <element signature="e#7708#7709#0" expanded="true" />
+            <element signature="e#7736#7737#0" expanded="true" />
+            <element signature="e#8077#8078#0" expanded="true" />
+            <element signature="e#8105#8106#0" expanded="true" />
+            <element signature="e#8772#8773#0" expanded="true" />
+            <element signature="e#8808#8809#0" expanded="true" />
+            <element signature="e#8842#8843#0" expanded="true" />
+            <element signature="e#8880#8881#0" expanded="true" />
+            <element signature="e#8916#8917#0" expanded="true" />
+            <element signature="e#8954#8955#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/asb/memorizenote/player/SimpleVocaPlayerActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.7028825">
-          <caret line="32" column="16" selection-start-line="32" selection-start-column="16" selection-end-line="32" selection-end-column="16" />
+        <state vertical-scroll-proportion="1.9323725">
+          <caret line="102" column="59" selection-start-line="102" selection-start-column="59" selection-end-line="102" selection-end-column="59" />
           <folding>
-            <element signature="e#2248#2692#0" expanded="true" />
-            <element signature="e#2691#2692#0" expanded="true" />
-            <element signature="e#2727#3376#0" expanded="true" />
-            <element signature="e#3375#3376#0" expanded="true" />
-            <element signature="e#8882#8883#0" expanded="true" />
-            <element signature="e#8922#8923#0" expanded="true" />
+            <element signature="e#2763#3412#0" expanded="true" />
+            <element signature="e#3411#3412#0" expanded="true" />
+            <element signature="e#3746#3747#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -6,4 +6,5 @@ package com.asb.memorizenote.data;
 public class SimpleVocaData extends AbstractData {
     public String mWord;
     public String mMeaning;
+    public boolean mMarking = false;
 }

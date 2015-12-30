@@ -36,6 +36,8 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
     boolean mIsAllDismissed = false;
     boolean mIsRandomized = false;
+    boolean mIsShowMarking = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +80,6 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
                 mIsRandomized = !mIsRandomized;
             }
         });
-
         setExtraButton("Auto", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +98,17 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
                     mStatusAuto.setText("Auto:ON");
                     mStatusAuto.setTag(true);
                 }
+            }
+        });
+        setExtraButton("Mark", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mIsRandomized) {
+                    showToast("무작위보기 해제 후 사용하세요.");
+                    return;
+                }
+
+                mIsShowMarking = !mIsShowMarking;
             }
         });
     }
@@ -123,7 +135,10 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
     @Override
     protected void onPreviousContent() {
-        SimpleVocaData data = mAdapter.previous();
+        SimpleVocaData data = null;
+        do {
+            data = mAdapter.previous();
+        } while(data != null && mIsShowMarking && !data.mMarking);
 
         if(data != null)
             setWordAndMeaning(data);
@@ -133,7 +148,10 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
     @Override
     protected void onNextContent() {
-        SimpleVocaData data = mAdapter.next();
+        SimpleVocaData data = null;
+        do {
+            data = mAdapter.next();
+        } while(data != null && mIsShowMarking && !data.mMarking);
 
         if(data != null)
             setWordAndMeaning(data);
@@ -181,6 +199,24 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
     }
 
     @Override
+    protected void onFlingUp() {
+        super.onFlingUp();
+        SimpleVocaData data = mAdapter.current();
+        data.mMarking = true;
+
+        setWordAndMeaning(data);
+    }
+
+    @Override
+    protected void onFlingDown() {
+        super.onFlingDown();
+        SimpleVocaData data = mAdapter.current();
+        data.mMarking = false;
+
+        setWordAndMeaning(data);
+    }
+
+    @Override
     protected void onHandleExtraMessage(Message msg) {
         switch (msg.what) {
             case Constants.HandlerFlags.SimpleVocalPlayerActivity.AUTO_PLAYING_INIT:
@@ -208,10 +244,16 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         mWordView.setText(data.mWord);
         mMeaningView.setText(data.mMeaning);
 
+        if(data.mMarking)
+            mWordView.setTextColor(Color.YELLOW);
+        else
+            mWordView.setTextColor(Color.WHITE);
+
         if(mMeaningDismissList.get(mAdapter.currentPosition()))
             mMeaningView.setTextColor(Color.BLACK);
-        else
+        else {
             mMeaningView.setTextColor(Color.WHITE);
+        }
 
         setChapterTitle("" + (data.mChapterNum));
     }
