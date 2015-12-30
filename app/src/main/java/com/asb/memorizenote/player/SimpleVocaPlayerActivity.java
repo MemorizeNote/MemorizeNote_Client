@@ -56,6 +56,8 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         mMeaningView.setTextColor(Color.BLACK);
 
         mAdapter = (SimpleVocaAdapter)((MemorizeNoteApplication) getApplication()).getDataAdpaterManager().getItemListAdapter(mBookName);
+        //TODO test
+        mAdapter.randomize();
 
         mMeaningDismissList = new ArrayList<>();
         int itemCount = mAdapter.getCount();

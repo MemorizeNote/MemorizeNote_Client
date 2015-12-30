@@ -25,6 +25,9 @@ import com.asb.memorizenote.ui.update.FileUpdateActivity;
 import com.asb.memorizenote.widget.libraryseat.LibrarySeatParser;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 
 public class MainActivity extends BaseActivity implements ListView.OnItemClickListener, AbstractAdapter.OnDataLoadListener {
@@ -64,6 +67,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
         switch(id) {
             case R.id.action_settings:
+                testRandIdx();
                 break;
             case R.id.action_update_data:
                 mIsUpdating = true;
@@ -151,5 +155,46 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         }
 
         hideProgress();
+    }
+
+    private void testRandIdx() {
+        int MAX_ITEM_SIZE = 10;
+        int MAX_BOOK_SIZE = 3;
+
+        ArrayList<Integer> itemNumPerChapter = new ArrayList<>();
+        itemNumPerChapter.add(3);
+        itemNumPerChapter.add(4);
+        itemNumPerChapter.add(3);
+
+        int[] results = new int[MAX_ITEM_SIZE];
+        for(int i=0; i<MAX_ITEM_SIZE; i++)
+            results[i] = -1;
+
+        int totalItemNum = 0;
+        Random rand = new Random();
+        HashMap<Integer, Integer> checker = new HashMap<>();
+        for(int chapterNum : itemNumPerChapter) {
+            int seed = chapterNum;
+
+            for(int i=totalItemNum; i<totalItemNum+chapterNum; i++) {
+                int tmp = rand.nextInt(seed);
+                while(true) {
+                    if(checker.get(tmp) == null) {
+                        checker.put(tmp, tmp);
+                        break;
+                    }
+
+                    tmp = rand.nextInt(seed);
+                }
+
+                results[i] = tmp+totalItemNum;
+            }
+
+            checker.clear();
+            totalItemNum += chapterNum;
+        }
+
+        for(int i=0; i<MAX_ITEM_SIZE; i++)
+            Log.d("", i+":"+results[i]);
     }
 }
