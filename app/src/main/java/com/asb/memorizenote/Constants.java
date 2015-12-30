@@ -122,6 +122,13 @@ public class Constants {
         public static class FileUpdateActivity {
             public static final int INIT_FILE_LIST = 20;
         }
+
+        public static class SimpleVocalPlayerActivity {
+            public static final int AUTO_PLAYING_INIT = 10;
+            public static final int SHOW_NEXT_WORD = 11;
+            public static final int SHOW_MEANING = 12;
+            public static final int HIDE_MEANING = 13;
+        }
     }
 
     public static class IntentFlags {

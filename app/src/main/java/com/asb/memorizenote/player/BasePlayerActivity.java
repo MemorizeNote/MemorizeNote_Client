@@ -16,14 +16,24 @@ import com.asb.memorizenote.R;
 import com.asb.memorizenote.ui.BaseActivity;
 import com.asb.memorizenote.utils.MNLog;
 
+import java.util.HashMap;
+
 /**
  * Created by azureskybox on 15. 10. 13.
  */
-public abstract class BasePlayerActivity extends BaseActivity implements GestureDetector.OnGestureListener {
+public abstract class BasePlayerActivity extends BaseActivity implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
     //From http://pulsebeat.tistory.com/27
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+    protected enum TouchType {
+        ONE_POINT,
+        TWO_POINT,
+        THREE_POINT;
+    }
+    private TouchType mTouchType;
+    private HashMap<Integer, Integer> mPointerMap = new HashMap<>();
 
     protected int mDataType = BookType.NONE;
     protected String mBookName = null;
@@ -45,8 +55,6 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     private Button[] mExtraButtons = new Button[4];
 
     private GestureDetector mGestureDetector;
-    private boolean mTouchStartOnChapter;
-    private boolean mTouchStartOnContent;
 
     public static Intent getLaunchingIntent(Context context, String bookName, int dataType, int startChapter, int endChapter) {
         Intent intent = new Intent();
@@ -86,14 +94,7 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
         mGestureDetector = new GestureDetector(getApplicationContext(), this, null);
 
         mChapterWrapper = (LinearLayout)findViewById(R.id.base_player_chapter_wrapper);
-        mChapterWrapper.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mTouchStartOnChapter = true;
-                mGestureDetector.onTouchEvent(event);
-                return false;
-            }
-        });
+
         mChapterTitle = (TextView)findViewById(R.id.base_player_chapter_title);
         mChapterTitle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,27 +125,25 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         //From http://pulsebeat.tistory.com/27
+        setTouchType();
+
         try {
             if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
                 return false;
 
             // right to left swipe
             if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                if(mTouchStartOnContent) {
+                if(mTouchType == TouchType.ONE_POINT)
                     onNextContent();
-                }
-                else {
+                else if(mTouchType == TouchType.TWO_POINT)
                     onNextChapter();
-                }
             }
             // left to right swipe
             else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                if(mTouchStartOnContent) {
+                if(mTouchType == TouchType.ONE_POINT)
                     onPreviousContent();
-                }
-                else {
+                else if(mTouchType == TouchType.TWO_POINT)
                     onPreviousChapter();
-                }
             }
             // down to up swipe
             else if (e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
@@ -156,9 +155,26 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
         }
 
-        mTouchStartOnContent = mTouchStartOnChapter = false;
+        clearTouchType();
 
         return true;
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+        onSingleTap();
+        return true;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {
+        onDoubleTap();
+        return true;
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
     }
 
     @Override
@@ -172,11 +188,6 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     }
 
     @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
-
-    @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         return false;
     }
@@ -186,11 +197,42 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
     }
 
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent e) {
+        return false;
+    }
+
+    private void setTouchType() {
+        MNLog.d(""+mPointerMap.size());
+        switch (mPointerMap.size()) {
+            case 1:
+                mTouchType = TouchType.TWO_POINT;
+                break;
+            case 2:
+                mTouchType = TouchType.THREE_POINT;
+                break;
+            default:
+                mTouchType = TouchType.ONE_POINT;
+                break;
+        }
+    }
+
+    private void clearTouchType() {
+        mPointerMap.clear();
+    }
+
     abstract protected void onPreviousChapter();
     abstract protected void onNextChapter();
 
     abstract protected void onPreviousContent();
     abstract protected void onNextContent();
+
+    protected void onSingleTap() {
+        MNLog.d("onSingleTap");
+    }
+    protected void onDoubleTap() {
+        MNLog.d("onDoubleTap");
+    }
 
     protected void setChapterTitle(String chapterTitle) {
         mChapterTitle.setText(chapterTitle);
@@ -202,7 +244,14 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mTouchStartOnContent = true;
+
+                int pointerIndex = event.getActionIndex();
+                int pointerID = event.getPointerId(pointerIndex);
+
+                if(event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
+                    mPointerMap.put(pointerID, pointerIndex);
+                }
+
                 mGestureDetector.onTouchEvent(event);
                 return true;
             }
@@ -210,9 +259,6 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     }
 
     protected void setExtraButton(String name, View.OnClickListener listener) {
-//        mExtraButton01.setText(name);
-//        mExtraButton01.setOnClickListener(listener);
-
         if(mCurrentExtraBtnNum >= MAX_EXTRA_BTN_NUM)
             return;
 
@@ -223,4 +269,6 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
         ++mCurrentExtraBtnNum;
     }
+
+
 }
