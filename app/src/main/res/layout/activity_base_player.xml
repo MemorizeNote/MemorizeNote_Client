@@ -19,35 +19,41 @@
             android:gravity="center"
             android:textSize="30dp"
             android:textColor="#FF000000"
-            android:text="Chapter. 01"
-            android:layout_weight="0.5"/>
+            android:text="Ch. 01"
+            android:layout_weight="0.2"/>
 
         <LinearLayout
             android:id="@+id/base_player_extra_buttons_wrapper"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="0.8"
             android:weightSum="1"
             android:gravity="center"
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/base_player_extra_btn_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"/>
+
+            <Button
                 android:id="@+id/base_player_extra_btn_3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.3"/>
+                android:layout_weight="0.25"/>
 
             <Button
                 android:id="@+id/base_player_extra_btn_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.3"/>
+                android:layout_weight="0.25"/>
 
             <Button
                 android:id="@+id/base_player_extra_btn_1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.3"/>
+                android:layout_weight="0.25"/>
 
         </LinearLayout>
 

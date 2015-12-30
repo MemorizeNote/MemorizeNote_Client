@@ -36,12 +36,13 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     protected LinearLayout mContentWrapper = null;
 
     protected LinearLayout mExtraButtonsWrapper = null;
-    private static int MAX_EXTRA_BTN_NUM = 3;
+    private static int MAX_EXTRA_BTN_NUM = 4;
     private int mCurrentExtraBtnNum = 0;
     protected Button mExtraButton01 = null;
     protected Button mExtraButton02 = null;
     protected Button mExtraButton03 = null;
-    private Button[] mExtraButtons = new Button[3];
+    protected Button mExtraButton04 = null;
+    private Button[] mExtraButtons = new Button[4];
 
     private GestureDetector mGestureDetector;
     private boolean mTouchStartOnChapter;
@@ -111,10 +112,13 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
         mExtraButton02.setVisibility(View.INVISIBLE);
         mExtraButton03 = (Button)findViewById(R.id.base_player_extra_btn_3);
         mExtraButton03.setVisibility(View.INVISIBLE);
+        mExtraButton04 = (Button)findViewById(R.id.base_player_extra_btn_4);
+        mExtraButton04.setVisibility(View.INVISIBLE);
 
         mExtraButtons[0] = mExtraButton01;
         mExtraButtons[1] = mExtraButton02;
         mExtraButtons[2] = mExtraButton03;
+        mExtraButtons[3] = mExtraButton04;
     }
 
     @Override
