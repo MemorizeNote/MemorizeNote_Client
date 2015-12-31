@@ -92,10 +92,20 @@ public class FileUpdateActivity extends BaseActivity implements AbstractAdapter.
     }
 
     @Override
-    public void onCompleted() {
+    public void onReadCompleted() {
         hideProgress();
         setResult(0);
         finish();
+    }
+
+    @Override
+    public void onWriteCompleted() {
+
+    }
+
+    @Override
+    public void onLoadCompleted() {
+
     }
 
     private class CheckFileListRunnable implements Runnable {

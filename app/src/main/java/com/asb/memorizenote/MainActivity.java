@@ -10,12 +10,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.asb.memorizenote.Constants.AdapterManagerFlags;
 import com.asb.memorizenote.Constants.HandlerFlags;
 import com.asb.memorizenote.Constants.ReaderFlags;
-import com.asb.memorizenote.data.AbstractData;
+import com.asb.memorizenote.data.BaseBookData;
+import com.asb.memorizenote.data.BaseItemData;
 import com.asb.memorizenote.data.apater.AbstractAdapter;
-import com.asb.memorizenote.data.apater.BookListAdapter;
 import com.asb.memorizenote.data.apater.DataAdapterManager;
 import com.asb.memorizenote.data.db.MemorizeDBHelper;
 import com.asb.memorizenote.data.reader.DBReader;
@@ -25,9 +24,6 @@ import com.asb.memorizenote.ui.update.FileUpdateActivity;
 import com.asb.memorizenote.widget.libraryseat.LibrarySeatParser;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 
 
 public class MainActivity extends BaseActivity implements ListView.OnItemClickListener, AbstractAdapter.OnDataLoadListener {
@@ -64,21 +60,21 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+        MemorizeDBHelper helper;
         switch(id) {
             case R.id.action_settings:
-                testRandIdx();
                 break;
             case R.id.action_update_data:
                 mIsUpdating = true;
-//                showProgress("Updating...");
-//
-//                mDataAdapterManager.update(AdapterManagerFlags.UPDATE_FROM_FILES, this);
                 startActivityForResult(new Intent(this, FileUpdateActivity.class), 0);
                 break;
             case R.id.action_dump:
-                MemorizeDBHelper helper = new MemorizeDBHelper(getApplicationContext());
+                helper = new MemorizeDBHelper(getApplicationContext());
                 helper.dump();
+                break;
+            case R.id.action_clear:
+                helper = new MemorizeDBHelper(getApplicationContext());
+                helper.clear();
                 break;
             case R.id.action_test_seat:
                 LibrarySeatParser parser = new LibrarySeatParser(LibrarySeatParser.LIB_TYPE_PYEONGCHON);
@@ -112,8 +108,8 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        AbstractData nameData = (AbstractData)mMainListAdapter.getItem(position);
-        Intent playerLaunchIntent = BasePlayerActivity.getLaunchingIntent(this, nameData.mName, nameData.mDataType, 0, nameData.mChapterNum);
+        BaseBookData bookData = (BaseBookData)mMainListAdapter.getItem(position);
+        Intent playerLaunchIntent = BasePlayerActivity.getLaunchingIntent(this, bookData.mName, bookData.mType, 0, bookData.mTotalChapter);
 
         startActivity(playerLaunchIntent);
     }
@@ -139,7 +135,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     }
 
     @Override
-    public void onCompleted() {
+    public void onReadCompleted() {
         if(mIsUpdating) {
             mIsUpdating = false;
             mMainListAdapter.notifyDataSetChanged();
@@ -157,44 +153,13 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         hideProgress();
     }
 
-    private void testRandIdx() {
-        int MAX_ITEM_SIZE = 10;
-        int MAX_BOOK_SIZE = 3;
+    @Override
+    public void onWriteCompleted() {
 
-        ArrayList<Integer> itemNumPerChapter = new ArrayList<>();
-        itemNumPerChapter.add(3);
-        itemNumPerChapter.add(4);
-        itemNumPerChapter.add(3);
+    }
 
-        int[] results = new int[MAX_ITEM_SIZE];
-        for(int i=0; i<MAX_ITEM_SIZE; i++)
-            results[i] = -1;
+    @Override
+    public void onLoadCompleted() {
 
-        int totalItemNum = 0;
-        Random rand = new Random();
-        HashMap<Integer, Integer> checker = new HashMap<>();
-        for(int chapterNum : itemNumPerChapter) {
-            int seed = chapterNum;
-
-            for(int i=totalItemNum; i<totalItemNum+chapterNum; i++) {
-                int tmp = rand.nextInt(seed);
-                while(true) {
-                    if(checker.get(tmp) == null) {
-                        checker.put(tmp, tmp);
-                        break;
-                    }
-
-                    tmp = rand.nextInt(seed);
-                }
-
-                results[i] = tmp+totalItemNum;
-            }
-
-            checker.clear();
-            totalItemNum += chapterNum;
-        }
-
-        for(int i=0; i<MAX_ITEM_SIZE; i++)
-            Log.d("", i+":"+results[i]);
     }
 }

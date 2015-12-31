@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.asb.memorizenote.Constants;
 import com.asb.memorizenote.Constants.*;
+import com.asb.memorizenote.data.BaseBookData;
+import com.asb.memorizenote.data.BaseChapterData;
+import com.asb.memorizenote.data.RawData;
 import com.asb.memorizenote.data.db.MemorizeDBHelper;
 
 import java.util.ArrayList;
@@ -32,18 +35,31 @@ public class DBReader extends AbstractReader {
             return;
 
         if(mReadTarget == ReaderFlags.DB.TARGET_ITEM) {
-            ArrayList<RawData> dataList = new ArrayList<RawData>();
-            mDBHelper.getItemList(dataList, mTargetBooksName, mStartChapter, mLastChpter);
+            ArrayList<RawData> bookList = new ArrayList<>();
+            ArrayList<RawData> chapterList = new ArrayList<>();
+            bookList = mDBHelper.getBookList(mTargetBookID);
 
-            mListener.onItemList(dataList);
+            for(RawData book : bookList) {
+                BaseBookData bookData = new BaseBookData();
+                bookData.fromRawData(book);
+
+                mListener.onBookChanged(book);
+
+                chapterList = mDBHelper.getChapterList(bookData.mID);
+
+                for(RawData chapter : chapterList) {
+                    BaseChapterData chapterData = new BaseChapterData();
+                    chapterData.fromRawData(chapter);
+
+                    mListener.onChapterChanged(chapter);
+
+                    mListener.onItemList(mDBHelper.getItemList(chapterData.mBookID, chapterData.mID));
+                }
+            }
         }
-        else {
-            ArrayList<RawData> dataList = new ArrayList<RawData>();
-            mDBHelper.getBookList(dataList);
+        else
+            mListener.onItemList(mDBHelper.getBookList());
 
-            mListener.onItemList(dataList);
-        }
-
-        mListener.onCompleted();
+        mListener.onReadCompleted();
     }
 }

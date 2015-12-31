@@ -8,10 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.asb.memorizenote.Constants.DB;
-import com.asb.memorizenote.data.AbstractData;
-import com.asb.memorizenote.data.NameListData;
-import com.asb.memorizenote.data.apater.AbstractAdapter;
-import com.asb.memorizenote.data.reader.RawData;
+import com.asb.memorizenote.data.BaseChapterData;
+import com.asb.memorizenote.data.RawData;
 
 import java.util.ArrayList;
 
@@ -23,6 +21,7 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = DB.VERSION;
     private static final String DB_NAME = DB.NAME;
     private static final String BOOK_TABLE = DB.BOOK_TABLE.NAME;
+    private static final String CHAPTER_TABLE = DB.CHAPTER_TABLE.NAME;
     private static final String ITEM_TABLE = DB.ITEM_TABLE.NAME;
 
     public MemorizeDBHelper(Context context) {
@@ -34,12 +33,21 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + BOOK_TABLE + "("
                 + DB.BOOK_TABLE.KEY_ID + " INTEGER PRIMARY KEY,"
                 + DB.BOOK_TABLE.KEY_NAME + " TEXT,"
-                + DB.BOOK_TABLE.KEY_COUNT + " INTEGER,"
+                + DB.BOOK_TABLE.KEY_CHAPTER_COUNT + " INTEGER,"
                 + DB.BOOK_TABLE.KEY_TYPE + " INTEGER"
+                + ")");
+
+        db.execSQL("CREATE TABLE " + CHAPTER_TABLE + "("
+                + DB.CHAPTER_TABLE.KEY_ID + " INTEGER PRIMARY KEY,"
+                + DB.CHAPTER_TABLE.KEY_BOOK_ID + " INTEGER,"
+                + DB.CHAPTER_TABLE.KEY_NAME + " TEXT,"
+                + DB.CHAPTER_TABLE.KEY_COUNT + " INTEGER"
                 + ")");
 
         db.execSQL("CREATE TABLE " + ITEM_TABLE + "("
                 + DB.ITEM_TABLE.KEY_ID + " INTEGER PRIMARY KEY, "
+                + DB.ITEM_TABLE.KEY_BOOK_ID + " TEXT,"
+                + DB.ITEM_TABLE.KEY_CHAPTER_ID + " TEXT,"
                 + DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER + " INTEGER, "
                 + DB.ITEM_TABLE.KEY_CHAPTER + " INTEGER, "
                 + DB.ITEM_TABLE.KEY_BOOK_NAME + " TEXT,"
@@ -59,19 +67,20 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+BOOK_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS "+ITEM_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS "+CHAPTER_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + ITEM_TABLE);
 
         onCreate(db);
     }
 
-    public int getCurrentChapterOfBook(String bookName) {
+    public int getCurrentChapterOfBook(int bookID) {
         int currentChapter = -1;
 
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.query(BOOK_TABLE, null, DB.BOOK_TABLE.KEY_NAME + "=?", new String[]{bookName}, null, null, null, null);
+        Cursor cursor = db.query(BOOK_TABLE, null, DB.BOOK_TABLE.KEY_ID + "=?", new String[]{""+bookID}, null, null, null, null);
         if(cursor.moveToFirst()) {
-            currentChapter = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_COUNT));
+            currentChapter = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_CHAPTER_COUNT));
         }
 
         cursor.close();
@@ -80,14 +89,15 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
         return currentChapter;
     }
 
-    public int getNextChapterOfBook(String bookName) {
+    public int getNextChapterOfBook(int bookID) {
         int lastChapter = 0;
 
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.query(BOOK_TABLE, null, DB.BOOK_TABLE.KEY_NAME + "=?", new String[]{bookName}, null, null, null, null);
+        Cursor cursor = db.query(BOOK_TABLE, null, DB.BOOK_TABLE.KEY_ID + "=?", new String[]{""+bookID}, null, null, null, null);
+
         if(cursor.moveToFirst()) {
-            lastChapter = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_COUNT));
+            lastChapter = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_CHAPTER_COUNT));
             ++lastChapter;
         }
 
@@ -97,64 +107,152 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
         return lastChapter;
     }
 
-    public void getBookList(ArrayList<RawData> dataList) {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(BOOK_TABLE, null, null, null, null, null, null, null);
-        if(cursor.moveToFirst()) {
-            do {
-                RawData data = new RawData();
-                data.mRawData01 = cursor.getString(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_NAME));
-                data.mRawData02 = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_COUNT));
-                data.mRawData03 = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_TYPE));
-                data.mRawData04 = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_ID));
-                dataList.add(data);
-            } while (cursor.moveToNext());
-        }
-    }
+    public int getChaptesInBook(int bookID) {
+        int chapters = 0;
 
-    public void updateBookList(BookInfo info) {
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.query(BOOK_TABLE, null, DB.BOOK_TABLE.KEY_NAME + "=?", new String[]{info.mBookName}, null, null, null, null);
-        if(cursor.moveToFirst()) {
-            int dataSetCnt = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_COUNT));
-            cursor.close();
-            db.close();
+        Cursor cursor = db.query(BOOK_TABLE, null, DB.BOOK_TABLE.KEY_ID + "=?", new String[]{"" + bookID}, null, null, null, null);
 
-            ++dataSetCnt;
-
-            db = getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(DB.BOOK_TABLE.KEY_COUNT, dataSetCnt);
-            db.update(BOOK_TABLE, values, DB.BOOK_TABLE.KEY_NAME + "=?", new String[]{info.mBookName});
-
-            db.close();
-
-            info.mBookTotalChapter = dataSetCnt;
-            return;
-        }
+        if(cursor.moveToFirst())
+            chapters = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_CHAPTER_COUNT));
 
         cursor.close();
         db.close();
 
-        db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DB.BOOK_TABLE.KEY_NAME, info.mBookName);
-        values.put(DB.BOOK_TABLE.KEY_COUNT, 0);
-        values.put(DB.BOOK_TABLE.KEY_TYPE, info.mBookType);
-        db.insert(BOOK_TABLE, null, values);
-
-        db.close();
-
-        info.mBookTotalChapter = 0;
+        return chapters;
     }
 
-    public void addItem(ContentValues values) {
+    public int findBook(String name) {
+        int id = -1;
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(BOOK_TABLE, null, DB.BOOK_TABLE.KEY_NAME + "=?", new String[]{name}, null, null, null, null);
+
+        if(cursor.moveToFirst())
+            id = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_ID));
+
+        cursor.close();
+        db.close();
+
+        return id;
+    }
+
+    public int addBook(String name, int type) {
         SQLiteDatabase db = getWritableDatabase();
 
-        db.insert(ITEM_TABLE, null, values);
+        ContentValues values = new ContentValues();
+        values.put(DB.BOOK_TABLE.KEY_NAME, name);
+        values.put(DB.BOOK_TABLE.KEY_CHAPTER_COUNT, 0);
+        values.put(DB.BOOK_TABLE.KEY_TYPE, type);
+        int bookId = (int)db.insert(BOOK_TABLE, null, values);
 
         db.close();
+
+        return bookId;
+    }
+
+    public void updateBook(int id, String name, int type, int chaptersInBook) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DB.BOOK_TABLE.KEY_NAME, name);
+        values.put(DB.BOOK_TABLE.KEY_CHAPTER_COUNT, chaptersInBook);
+        values.put(DB.BOOK_TABLE.KEY_TYPE, type);
+        db.update(BOOK_TABLE, values, DB.BOOK_TABLE.KEY_ID + "=?", new String[]{"" + id});
+
+        db.close();
+    }
+
+    public ArrayList<RawData> getBookList() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(BOOK_TABLE, null, null, null, null, null, null, null);
+
+        ArrayList<RawData> dataList = new ArrayList<>();
+        if(cursor.moveToFirst()) {
+            do {
+                RawData data = new RawData();
+                data.mRawData01 = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_ID));
+                data.mRawData02 = cursor.getString(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_NAME));
+                data.mRawData03 = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_CHAPTER_COUNT));
+                data.mRawData04 = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_TYPE));
+                dataList.add(data);
+            } while (cursor.moveToNext());
+        }
+
+        return dataList;
+    }
+
+    public ArrayList<RawData> getBookList(int bookID) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(BOOK_TABLE, null, DB.BOOK_TABLE.KEY_ID + "=?", new String[]{""+bookID}, null, null, null, null);
+
+        ArrayList<RawData> dataList = new ArrayList<>();
+        if(cursor.moveToFirst()) {
+            do {
+                RawData data = new RawData();
+                data.mRawData01 = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_ID));
+                data.mRawData02 = cursor.getString(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_NAME));
+                data.mRawData03 = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_CHAPTER_COUNT));
+                data.mRawData04 = cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_TYPE));
+                dataList.add(data);
+            } while (cursor.moveToNext());
+        }
+
+        return dataList;
+    }
+
+    public int getChapterCountOnBook(int bookID) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(BOOK_TABLE, null, DB.BOOK_TABLE.KEY_ID + "=?", new String[]{""+bookID}, null, null, null, null);
+        if(cursor.moveToFirst()) {
+            return cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_ID));
+        }
+        else
+            return 0;
+    }
+
+    public int addChapter(int bookID, String name, int count) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DB.CHAPTER_TABLE.KEY_BOOK_ID, bookID);
+        values.put(DB.CHAPTER_TABLE.KEY_NAME, name);
+        values.put(DB.CHAPTER_TABLE.KEY_COUNT, count);
+        int id = (int)db.insert(CHAPTER_TABLE, null, values);
+
+        db.close();
+
+        return id;
+    }
+
+    public ArrayList<RawData> getChapterList(int bookID) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(CHAPTER_TABLE, null, DB.CHAPTER_TABLE.KEY_BOOK_ID + "=?", new String[]{"" + bookID}, null, null,  DB.CHAPTER_TABLE.KEY_ID + " ASC", null);
+
+        ArrayList<RawData> dataList = new ArrayList<>();
+        if(cursor.moveToFirst()) {
+            do {
+                RawData data = new RawData();
+                data.mRawData01 = cursor.getInt(cursor.getColumnIndex(DB.CHAPTER_TABLE.KEY_ID));
+                data.mRawData02 = cursor.getInt(cursor.getColumnIndex(DB.CHAPTER_TABLE.KEY_BOOK_ID));
+                data.mRawData03 = cursor.getString(cursor.getColumnIndex(DB.CHAPTER_TABLE.KEY_NAME));
+                data.mRawData04 = cursor.getInt(cursor.getColumnIndex(DB.CHAPTER_TABLE.KEY_COUNT));
+                dataList.add(data);
+            } while (cursor.moveToNext());
+        }
+
+        return dataList;
+    }
+
+    public int addItem(ContentValues values) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        int id = (int)db.insert(ITEM_TABLE, null, values);
+
+        db.close();
+
+        return id;
     }
 
     public void getItemList(ArrayList<RawData> dataList, String bookame, int first, int last) {
@@ -167,22 +265,71 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()) {
             do {
                 RawData data = new RawData();
-                data.mRawData01 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_NAME));
-                data.mRawData02 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER));
-                data.mRawData03 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER));
-                data.mRawData04 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_01));
-                data.mRawData05 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_02));
-                data.mRawData06 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_03));
-                data.mRawData07 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_04));
-                data.mRawData08 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_05));
-                data.mRawData09 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_06));
-                data.mRawData10 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_07));
-                data.mRawData11 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_08));
-                data.mRawData12 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_09));
-                data.mRawData13 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_10));
+                data.mRawData01 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_ID));
+                data.mRawData02 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_NAME));
+                data.mRawData03 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_ID));
+                data.mRawData04 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER_ID));
+                data.mRawData05 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER));
+                data.mRawData06 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER));
+                data.mRawData07 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_01));
+                data.mRawData08 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_02));
+                data.mRawData09 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_03));
+                data.mRawData10 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_04));
+                data.mRawData11 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_05));
+                data.mRawData12 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_06));
+                data.mRawData13 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_07));
+                data.mRawData14 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_08));
+                data.mRawData15 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_09));
+                data.mRawData16 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_10));
                 dataList.add(data);
             } while (cursor.moveToNext());
         }
+    }
+
+    public ArrayList<RawData> getItemList(int bookID, int chapterID) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(ITEM_TABLE, null,
+                DB.ITEM_TABLE.KEY_BOOK_ID + "=? AND " + DB.ITEM_TABLE.KEY_CHAPTER_ID + "=?",
+                new String[]{""+bookID, ""+chapterID},
+                null, null,
+                DB.ITEM_TABLE.KEY_CHAPTER + " ASC",
+                null);
+
+        ArrayList<RawData> dataList = new ArrayList<>();
+        if(cursor.moveToFirst()) {
+            do {
+                RawData data = new RawData();
+                data.mRawData01 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_ID));
+                data.mRawData02 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_NAME));
+                data.mRawData03 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_ID));
+                data.mRawData04 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER_ID));
+                data.mRawData05 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER));
+                data.mRawData06 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER));
+                data.mRawData07 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_01));
+                data.mRawData08 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_02));
+                data.mRawData09 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_03));
+                data.mRawData10 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_04));
+                data.mRawData11 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_05));
+                data.mRawData12 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_06));
+                data.mRawData13 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_07));
+                data.mRawData14 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_08));
+                data.mRawData15 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_09));
+                data.mRawData16 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_10));
+                dataList.add(data);
+            } while (cursor.moveToNext());
+        }
+
+        return dataList;
+    }
+
+    public void clear() {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.execSQL("DROP TABLE IF EXISTS "+BOOK_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS "+CHAPTER_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + ITEM_TABLE);
+
+        onCreate(db);
     }
 
     public void dump() {
@@ -197,6 +344,8 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
                 Log.e("MN", "book name="+cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_NAME))
                 +", chapter="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER))
                 +", index in chapter="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER))
+                +", book id="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_ID))
+                +", chapter id="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER_ID))
                 +", data01="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_01))
                 +", data02="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_02))
                 +", data03="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_03))
@@ -214,9 +363,26 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
                 null);
         if(cursor.moveToFirst()) {
             do {
-                RawData data = new RawData();
-                Log.e("MN", "book name="+cursor.getString(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_NAME))
+                Log.e("MN", "book id="+cursor.getString(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_ID))
+                        +", book name="+ cursor.getString(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_NAME))
+                        +", chapters in book="+ cursor.getString(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_CHAPTER_COUNT))
                         +", book type="+ cursor.getInt(cursor.getColumnIndex(DB.BOOK_TABLE.KEY_TYPE)));
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        cursor = db.query(CHAPTER_TABLE, null,
+                null,
+                null, null, null,
+                null,
+                null);
+        if(cursor.moveToFirst()) {
+            do {
+                Log.e("MN", "chapter id="+cursor.getString(cursor.getColumnIndex(DB.CHAPTER_TABLE.KEY_ID))
+                        +", book id="+cursor.getString(cursor.getColumnIndex(DB.CHAPTER_TABLE.KEY_BOOK_ID))
+                        +", item count="+cursor.getString(cursor.getColumnIndex(DB.CHAPTER_TABLE.KEY_COUNT))
+                        +", chapter name="+ cursor.getString(cursor.getColumnIndex(DB.CHAPTER_TABLE.KEY_NAME)));
 
             } while (cursor.moveToNext());
         }

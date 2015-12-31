@@ -3,6 +3,8 @@ package com.asb.memorizenote.data.reader;
 import android.content.Context;
 
 import com.asb.memorizenote.Constants;
+import com.asb.memorizenote.data.BaseChapterData;
+import com.asb.memorizenote.data.RawData;
 
 import java.util.ArrayList;
 
@@ -16,6 +18,7 @@ public abstract class AbstractReader {
     protected OnDataReadListener mListener;
     public int mType = Constants.ReaderType.NONE;
 
+    protected int mTargetBookID;
     protected String mTargetBooksName = null;
     protected int mStartChapter = 0;
     protected int mLastChpter = 0;
@@ -29,6 +32,10 @@ public abstract class AbstractReader {
         return true;
     }
 
+    public void setTargetBookID(int bookID) {
+        mTargetBookID = bookID;
+    }
+
     public void setTargetBookName(String bookName) {
         mTargetBooksName = bookName;
     }
@@ -38,16 +45,16 @@ public abstract class AbstractReader {
         mLastChpter = last;
     }
 
-    public int getType() {
+    public int getReaderType() {
         return mType;
     }
 
     public abstract void readAll();
 
     public interface OnDataReadListener {
-        void onBookChanged(String bookName, int bookType, int chapter);
-        void onItem(RawData data);
+        void onBookChanged(RawData data);
+        void onChapterChanged(RawData data);
         void onItemList(ArrayList<RawData> dataList);
-        void onCompleted();
+        void onReadCompleted();
     }
 }

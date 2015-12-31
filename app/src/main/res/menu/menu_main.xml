@@ -5,7 +5,9 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_update_data" android:title="@string/action_update_data"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_dump" android:title="@string/action_dump"
+    <item android:id="@+id/action_dump" android:title="@string/action_db_dump"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_clear" android:title="@string/action_db_clear"
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_test_seat" android:title="@string/action_test_seat"
         android:orderInCategory="100" app:showAsAction="never" />

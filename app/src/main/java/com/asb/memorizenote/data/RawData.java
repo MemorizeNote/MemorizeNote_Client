@@ -1,4 +1,4 @@
-package com.asb.memorizenote.data.reader;
+package com.asb.memorizenote.data;
 
 /**
  * Created by azureskybox on 15. 10. 13.
@@ -19,7 +19,8 @@ public class RawData {
     public Object mRawData13 = null;
     public Object mRawData14 = null;
     public Object mRawData15 = null;
-    public Object[] mRawDataArr = new Object[15];
+    public Object mRawData16 = null;
+    public Object[] mRawDataArr = new Object[16];
 
     public void flattenData() {
         mRawData01 = mRawDataArr[0];
@@ -37,5 +38,6 @@ public class RawData {
         mRawData13 = mRawDataArr[12];
         mRawData14 = mRawDataArr[13];
         mRawData15 = mRawDataArr[14];
+        mRawData16 = mRawDataArr[15];
     }
 }

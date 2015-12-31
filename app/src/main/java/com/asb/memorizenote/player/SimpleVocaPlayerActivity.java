@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.asb.memorizenote.Constants;
 import com.asb.memorizenote.MemorizeNoteApplication;
 import com.asb.memorizenote.R;
-import com.asb.memorizenote.data.SimpleVocaData;
 import com.asb.memorizenote.player.adapter.SimpleVocaAdapter;
+import com.asb.memorizenote.player.data.SimpleVocaData;
 
 import java.util.ArrayList;
 
@@ -63,7 +63,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         for(int i=0; i<itemCount; i++)
             mMeaningDismissList.add(true);
 
-        SimpleVocaData data = mAdapter.first();
+        SimpleVocaData data = (SimpleVocaData)mAdapter.first();
         setWordAndMeaning(data);
 
         setExtraButton("Rnd", new View.OnClickListener() {
@@ -115,7 +115,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
     @Override
     protected void onPreviousChapter() {
-        SimpleVocaData data = mAdapter.previousChapter();
+        SimpleVocaData data = (SimpleVocaData)mAdapter.previousChapter();
 
         if(data != null)
             setWordAndMeaning(data);
@@ -125,7 +125,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
     @Override
     protected void onNextChapter() {
-        SimpleVocaData data = mAdapter.nextChapter();
+        SimpleVocaData data = (SimpleVocaData)mAdapter.nextChapter();
 
         if(data != null)
             setWordAndMeaning(data);
@@ -137,7 +137,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
     protected void onPreviousContent() {
         SimpleVocaData data = null;
         do {
-            data = mAdapter.previous();
+            data = (SimpleVocaData)mAdapter.previous();
         } while(data != null && mIsShowMarking && !data.mMarking);
 
         if(data != null)
@@ -150,7 +150,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
     protected void onNextContent() {
         SimpleVocaData data = null;
         do {
-            data = mAdapter.next();
+            data = (SimpleVocaData)mAdapter.next();
         } while(data != null && mIsShowMarking && !data.mMarking);
 
         if(data != null)
@@ -201,7 +201,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
     @Override
     protected void onFlingUp() {
         super.onFlingUp();
-        SimpleVocaData data = mAdapter.current();
+        SimpleVocaData data = (SimpleVocaData)mAdapter.current();
         data.mMarking = true;
 
         setWordAndMeaning(data);
@@ -210,7 +210,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
     @Override
     protected void onFlingDown() {
         super.onFlingDown();
-        SimpleVocaData data = mAdapter.current();
+        SimpleVocaData data = (SimpleVocaData)mAdapter.current();
         data.mMarking = false;
 
         setWordAndMeaning(data);
@@ -229,7 +229,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
                 setMeaningVisibility(false);
                 break;
             case Constants.HandlerFlags.SimpleVocalPlayerActivity.SHOW_NEXT_WORD:
-                SimpleVocaData data = mAdapter.next();
+                SimpleVocaData data = (SimpleVocaData)mAdapter.next();
                 if(data != null) {
                     setWordAndMeaning(data);
                 }
@@ -255,7 +255,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
             mMeaningView.setTextColor(Color.WHITE);
         }
 
-        setChapterTitle("" + (data.mChapterNum));
+        setChapterTitle(data.mChapterName);
     }
 
     private void setMeaningVisibility(boolean visibility){

@@ -16,6 +16,7 @@
         android:textColor="#FFFFFFFF"/>
 
     <ScrollView
+        android:id="@+id/simple_memorize_player_scroll"
         android:layout_width="match_parent"
         android:layout_height="330dp"
         android:layout_margin="15dp"

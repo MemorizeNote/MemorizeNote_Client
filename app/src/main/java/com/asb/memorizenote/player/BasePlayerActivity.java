@@ -65,6 +65,8 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     private GestureDetector mGestureDetector;
 
     public static Intent getLaunchingIntent(Context context, String bookName, int dataType, int startChapter, int endChapter) {
+        MNLog.d("getLaunchingIntent, book name="+bookName);
+
         Intent intent = new Intent();
         intent.putExtra(IntentFlags.BasePlayer.DATA_TYPE, dataType);
         intent.putExtra(IntentFlags.BasePlayer.BOOK_NAME, bookName);

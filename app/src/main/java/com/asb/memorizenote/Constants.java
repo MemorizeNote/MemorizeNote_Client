@@ -16,6 +16,7 @@ public class Constants {
     public static class MetaData {
         public static final String KEY_NAME = "name";
         public static final String KEY_TYPE = "type";
+        public static final String KEY_CHAPTER_NAME = "chapterName";
         public static final String KEY_MULTIPLE_LINE_START = "multipleLineStart";
         public static final String KEY_MULTIPLE_LINE_END = "multipleLineEnd";
     }
@@ -72,6 +73,19 @@ public class Constants {
         }
     }
 
+    public enum WriterType {
+        NONE,
+        DB,
+        FILE,
+        HTTP
+    }
+
+    public enum AdapterDataType {
+        BOOK,
+        CHAPTER,
+        ITEM;
+    }
+
     public static class AdapterManagerFlags {
         public static final int UPDATE_FROM_FILES = 0;
         public static final int UPDATE_FROM_HTTP = 1;
@@ -87,14 +101,25 @@ public class Constants {
 
             public static final String KEY_ID = "_id";
             public static final String KEY_NAME = "name";
-            public static final String KEY_COUNT = "count";
             public static final String KEY_TYPE = "type";
+            public static final String KEY_CHAPTER_COUNT = "chapter_count";
+        }
+
+        public static class CHAPTER_TABLE {
+            public static final String NAME = "memorize_chapters";
+
+            public static final String KEY_ID = "_id";
+            public static final String KEY_BOOK_ID = "book_id";
+            public static final String KEY_NAME = "name";
+            public static final String KEY_COUNT = "count";
         }
 
         public static class ITEM_TABLE {
             public static final String NAME = "memorize_items";
 
             public static final String KEY_ID = "_id";
+            public static final String KEY_BOOK_ID = "book_id";
+            public static final String KEY_CHAPTER_ID = "chapter_id";
             public static final String KEY_BOOK_NAME = "book_name";
             public static final String KEY_INDEX_IN_CHAPTER = "index_in_chapter";
             public static final String KEY_CHAPTER = "chapter";

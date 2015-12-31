@@ -8,25 +8,25 @@
         android:id="@+id/base_player_chapter_wrapper"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:weightSum="1"
         android:layout_weight="0.1">
 
         <TextView
             android:id="@+id/base_player_chapter_title"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:gravity="center"
-            android:textSize="30dp"
+            android:textSize="15dp"
             android:textColor="#FF000000"
             android:text="Ch. 01"
-            android:layout_weight="0.2"/>
+            android:layout_weight="0.4"/>
 
         <LinearLayout
             android:id="@+id/base_player_extra_buttons_wrapper"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.8"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.6"
             android:weightSum="1"
             android:gravity="center"
             android:orientation="horizontal">

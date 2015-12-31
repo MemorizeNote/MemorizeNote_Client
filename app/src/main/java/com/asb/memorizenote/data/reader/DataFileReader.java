@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.asb.memorizenote.Constants;
+import com.asb.memorizenote.data.BaseBookData;
+import com.asb.memorizenote.data.BaseChapterData;
+import com.asb.memorizenote.data.RawData;
 import com.asb.memorizenote.utils.MNLog;
 import com.asb.memorizenote.utils.Utils;
 
@@ -70,6 +73,8 @@ public class DataFileReader extends AbstractReader {
         RawData convertedRawData = null;
         String dataName = null;
         int dataType = Constants.BookType.NONE;
+        String chapterName = null;
+        BaseChapterData currentChapter = null;
 
         for(File dataFile : mDataFileList) {
             try {
@@ -91,11 +96,25 @@ public class DataFileReader extends AbstractReader {
                         else if(metaDatas[0].equals(Constants.MetaData.KEY_TYPE)) {
                             dataType = Constants.BookType.getType(metaDatas[1]);
                         }
+                        else if(metaDatas[0].equals(Constants.MetaData.KEY_CHAPTER_NAME)) {
+                            chapterName = metaDatas[1];
+                        }
                     }
                     else {
                         if(!sendHeader) {
                             sendHeader = true;
-                            mListener.onBookChanged(dataName, dataType, 0);
+
+                            BaseBookData book = new BaseBookData();
+                            book.mName = dataName;
+                            book.mType = dataType;
+                            mListener.onBookChanged(book.toRawData());
+
+                            //Create new Chapter
+                            currentChapter = new BaseChapterData();
+                            if(chapterName != null) {
+                                currentChapter.mName = chapterName;
+                            }
+                            mListener.onChapterChanged(currentChapter.toRawData());
                         }
 
                         String[] split_string = rawData.split(";");
@@ -144,11 +163,9 @@ public class DataFileReader extends AbstractReader {
 
                         convertedRawData.flattenData();
 
-                        MNLog.d(">>"+(String)convertedRawData.mRawData01+(String)convertedRawData.mRawData02+(String)convertedRawData.mRawData03);
+                        MNLog.d(">>" + (String) convertedRawData.mRawData01 + (String) convertedRawData.mRawData02 + (String) convertedRawData.mRawData03);
 
                         rawDataList.add(convertedRawData);
-
-                        mListener.onItem(convertedRawData);
 
                         if(multipleLineEnd){
                             multipleLineStart = false;
@@ -169,6 +186,6 @@ public class DataFileReader extends AbstractReader {
                 e.printStackTrace();
             }
         }
-        mListener.onCompleted();
+        mListener.onReadCompleted();
     }
 }

@@ -3,13 +3,15 @@ package com.asb.memorizenote.data.apater;
 import android.content.Context;
 import android.util.Log;
 
+import com.asb.memorizenote.BookListAdapter;
 import com.asb.memorizenote.Constants;
 import com.asb.memorizenote.Constants.*;
+import com.asb.memorizenote.data.BaseBookData;
 import com.asb.memorizenote.data.NameListData;
 import com.asb.memorizenote.data.reader.DBReader;
 import com.asb.memorizenote.data.reader.DataFileReader;
-import com.asb.memorizenote.data.reader.RawData;
-import com.asb.memorizenote.player.adapter.SimpleVocaAdapter;
+import com.asb.memorizenote.data.writer.DBWriter;
+import com.asb.memorizenote.utils.MNLog;
 import com.asb.memorizenote.utils.Utils;
 
 import java.io.BufferedReader;
@@ -31,7 +33,8 @@ public class DataAdapterManager implements AbstractAdapter.OnDataLoadListener{
 
     private static final int UPDATE_START = 20;
     private static final int IN_UPDATE_FROM_FILES = 21;
-    private static final int UPDATE_FINISHED = 22;
+    private static final int IN_UPDATE_WRITING = 22;
+    private static final int UPDATE_FINISHED = 23;
 
     private Context mContext = null;
     private AbstractAdapter.OnDataLoadListener mListener = null;
@@ -40,7 +43,7 @@ public class DataAdapterManager implements AbstractAdapter.OnDataLoadListener{
 
     //init target data
     private int mCurInitBookIdx = 0;
-    private NameListData mCurInitBook = null;
+    private BaseBookData mCurInitBook = null;
 
     //update target data
     private int mCurUpdateIdx = 0;
@@ -63,27 +66,32 @@ public class DataAdapterManager implements AbstractAdapter.OnDataLoadListener{
         DBReader dbReader = new DBReader(mContext, ReaderFlags.DB.TARGET_BOOK);
         mBookListAdapter = new BookListAdapter(mContext);
         mBookListAdapter.setListener(this);
-        mBookListAdapter.readItems(dbReader);
+        mBookListAdapter.setDataType(AdapterDataType.BOOK);
+        mBookListAdapter.setReader(dbReader);
+        mBookListAdapter.setWriter(new DBWriter(mContext));
+        mBookListAdapter.readItems(null);
     }
 
     private void initializeItemListAdapter() {
         if(mBookListAdapter.getCount() <= mCurInitBookIdx) {
             mCurrentState = INIT_ITEM_LIST_FINISHED;
-            this.onCompleted();
+            this.onReadCompleted();
             return;
         }
 
-        mCurInitBook = (NameListData)mBookListAdapter.getItem(mCurInitBookIdx);
+        mCurInitBook = (BaseBookData)mBookListAdapter.getItem(mCurInitBookIdx);
         ++mCurInitBookIdx;
 
         DBReader reader = new DBReader(mContext, ReaderFlags.DB.TARGET_ITEM);
         reader.setTargetBookName(mCurInitBook.mName);
+        reader.setTargetBookID(mCurInitBook.mID);
 
-        AbstractAdapter adapter = Utils.getAdapter(mContext, mCurInitBook.mDataType);
+        AbstractAdapter adapter = Utils.getAdapter(mContext, mCurInitBook.mType);
         adapter.setListener(this);
+        adapter.setReader(reader);
         mItemListAdapterMap.put(mCurInitBook.mName, adapter);
 
-        adapter.readItems(reader);
+        adapter.readItems(null);
     }
 
     public void update(int updateFrom, AbstractAdapter.OnDataLoadListener listener) {
@@ -91,6 +99,8 @@ public class DataAdapterManager implements AbstractAdapter.OnDataLoadListener{
     }
 
     public void update(int updateFrom, AbstractAdapter.OnDataLoadListener listener, ArrayList<File> fileList) {
+        MNLog.d("update");
+
         mListener = listener;
 
         switch(updateFrom) {
@@ -128,8 +138,8 @@ public class DataAdapterManager implements AbstractAdapter.OnDataLoadListener{
         if(mCurUpdateIdx >= mUpdateFileList.size()) {
             mCurrentState = UPDATE_FINISHED;
 
-            DBReader dbReader = new DBReader(mContext, ReaderFlags.DB.TARGET_BOOK);
-            mBookListAdapter.readItems(dbReader);
+            mBookListAdapter.setUpdating(false);
+            mBookListAdapter.readItems(null);
 
             return;
         }
@@ -162,7 +172,6 @@ public class DataAdapterManager implements AbstractAdapter.OnDataLoadListener{
 
             reader.close();
 
-            DataFileReader fileReader = new DataFileReader(mContext, currentFile.getName());
             AbstractAdapter adapter = mItemListAdapterMap.get(bookName);
             if(adapter == null) {
                 adapter = Utils.getAdapter(mContext, bookType);
@@ -172,9 +181,12 @@ public class DataAdapterManager implements AbstractAdapter.OnDataLoadListener{
             adapter.setUpdating(true);
             adapter.setListener(this);
 
+            adapter.setReader(new DataFileReader(mContext, currentFile.getName()));
+            adapter.setWriter(new DBWriter(mContext));
+
             mCurUpdatedAdapter = adapter;
 
-            adapter.readItems(fileReader);
+            adapter.readItems(null);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -195,7 +207,7 @@ public class DataAdapterManager implements AbstractAdapter.OnDataLoadListener{
     }
 
     @Override
-    public void onCompleted() {
+    public void onReadCompleted() {
         switch(mCurrentState) {
             case INIT_START:
                 mCurrentState = INIT_BOOK_LIST_FINISHED;
@@ -205,15 +217,30 @@ public class DataAdapterManager implements AbstractAdapter.OnDataLoadListener{
                 initializeItemListAdapter();
                 break;
             case IN_UPDATE_FROM_FILES:
+                mCurrentState = IN_UPDATE_WRITING;
                 mCurUpdatedAdapter.writeItems(null);
-                updateFromFiles();
                 break;
             case UPDATE_FINISHED:
                 mCurUpdateIdx = 0;
                 mUpdateFileList = new ArrayList<>();
             case INIT_ITEM_LIST_FINISHED:
-                mListener.onCompleted();
+                mListener.onReadCompleted();
                 break;
         }
+    }
+
+    @Override
+    public void onWriteCompleted() {
+        switch(mCurrentState) {
+            case IN_UPDATE_WRITING:
+                mCurrentState = IN_UPDATE_FROM_FILES;
+                updateFromFiles();
+                break;
+        }
+    }
+
+    @Override
+    public void onLoadCompleted() {
+
     }
 }

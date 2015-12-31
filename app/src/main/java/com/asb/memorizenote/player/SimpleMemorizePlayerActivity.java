@@ -8,12 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.asb.memorizenote.MemorizeNoteApplication;
 import com.asb.memorizenote.R;
-import com.asb.memorizenote.data.SimpleMemorizeData;
+import com.asb.memorizenote.player.data.SimpleMemorizeData;
 import com.asb.memorizenote.player.adapter.SimpleMemorizeAdapter;
+import com.asb.memorizenote.player.data.SimpleVocaData;
 
 import java.util.ArrayList;
 
@@ -37,20 +39,9 @@ public class SimpleMemorizePlayerActivity extends BasePlayerActivity {
         setContent(content);
 
         mTitleView = (TextView)content.findViewById(R.id.simple_memorize_player_title);
-        mTitleView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int curPosition = mAdapter.currentPosition();
-                boolean itemDismiss = mContentsDismissList.get(curPosition);
 
-                if (itemDismiss) {
-                    mContentsView.setTextColor(Color.WHITE);
-                } else {
-                    mContentsView.setTextColor(Color.BLACK);
-                }
-                mContentsDismissList.set(curPosition, !itemDismiss);
-            }
-        });
+        ((ScrollView)content.findViewById(R.id.simple_memorize_player_scroll)).requestDisallowInterceptTouchEvent(true);
+
         mContentsView = (TextView)content.findViewById(R.id.simple_memorize_player_contents);
         mContentsView.setTextColor(Color.BLACK);
 
@@ -61,9 +52,8 @@ public class SimpleMemorizePlayerActivity extends BasePlayerActivity {
         for(int i=0; i<itemCount; i++)
             mContentsDismissList.add(true);
 
-        SimpleMemorizeData data = mAdapter.first();
-        setWordAndMeaning(data.mTitle, data.mContents);
-        setChapterTitle("Chapter. " + (data.mChapterNum));
+        SimpleMemorizeData data = (SimpleMemorizeData)mAdapter.first();
+        setWordAndMeaning(data);
 
         setExtraButton("Clear", new View.OnClickListener() {
             @Override
@@ -89,34 +79,31 @@ public class SimpleMemorizePlayerActivity extends BasePlayerActivity {
 
     @Override
     protected void onPreviousContent() {
-        SimpleMemorizeData data = mAdapter.previous();
+        SimpleMemorizeData data = (SimpleMemorizeData)mAdapter.previous();
 
-        if(data != null) {
-            setWordAndMeaning(data.mTitle, data.mContents);
-
-            if(mContentsDismissList.get(mAdapter.currentPosition()))
-                mContentsView.setTextColor(Color.BLACK);
-            else
-                mContentsView.setTextColor(Color.WHITE);
-
-            setChapterTitle("Chapter. "+(data.mChapterNum));
-        }
+        if(data != null)
+            setWordAndMeaning(data);
     }
 
     @Override
     protected void onNextContent() {
-        SimpleMemorizeData data = mAdapter.next();
+        SimpleMemorizeData data = (SimpleMemorizeData)mAdapter.next();
 
-        if(data != null) {
-            setWordAndMeaning(data.mTitle, data.mContents);
+        if(data != null)
+            setWordAndMeaning(data);
+    }
 
-            if(mContentsDismissList.get(mAdapter.currentPosition()))
-                mContentsView.setTextColor(Color.BLACK);
-            else
-                mContentsView.setTextColor(Color.WHITE);
+    @Override
+    protected void onSingleTap() {
+        int curPosition = mAdapter.currentPosition();
+        boolean itemDismiss = mContentsDismissList.get(curPosition);
 
-            setChapterTitle("Chapter. "+(data.mChapterNum));
+        if (itemDismiss) {
+            mContentsView.setTextColor(Color.WHITE);
+        } else {
+            mContentsView.setTextColor(Color.BLACK);
         }
+        mContentsDismissList.set(curPosition, !itemDismiss);
     }
 
     @Override
@@ -124,8 +111,15 @@ public class SimpleMemorizePlayerActivity extends BasePlayerActivity {
 
     }
 
-    private void setWordAndMeaning(String word, String meaning) {
-        mTitleView.setText(word);
-        mContentsView.setText(meaning);
+    private void setWordAndMeaning(SimpleMemorizeData data) {
+        mTitleView.setText(data.mTitle);
+        mContentsView.setText(data.mContents);
+
+        if(mContentsDismissList.get(mAdapter.currentPosition()))
+            mContentsView.setTextColor(Color.BLACK);
+        else
+            mContentsView.setTextColor(Color.WHITE);
+
+        setChapterTitle(data.mChapterName);
     }
 }
