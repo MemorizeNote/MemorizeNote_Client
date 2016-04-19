@@ -50,6 +50,7 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
                 + DB.ITEM_TABLE.KEY_CHAPTER_ID + " TEXT,"
                 + DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER + " INTEGER, "
                 + DB.ITEM_TABLE.KEY_CHAPTER + " INTEGER, "
+                + DB.ITEM_TABLE.KEY_MARKING + " INTEGER, "
                 + DB.ITEM_TABLE.KEY_BOOK_NAME + " TEXT,"
                 + DB.ITEM_TABLE.KEY_DATA_01 + " TEXT, "
                 + DB.ITEM_TABLE.KEY_DATA_02 + " TEXT, "
@@ -66,9 +67,12 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS "+BOOK_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS "+CHAPTER_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + ITEM_TABLE);
+        //db.execSQL("DROP TABLE IF EXISTS "+BOOK_TABLE);
+        //db.execSQL("DROP TABLE IF EXISTS "+CHAPTER_TABLE);
+        //db.execSQL("DROP TABLE IF EXISTS " + ITEM_TABLE);
+
+        if(newVersion > oldVersion)
+            db.execSQL("ALTER TABLE "+ITEM_TABLE+" ADD marking INTEGER");
 
         onCreate(db);
     }
@@ -281,6 +285,7 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
                 data.mRawData14 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_08));
                 data.mRawData15 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_09));
                 data.mRawData16 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_10));
+                data.mRawData17 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_MARKING));
                 dataList.add(data);
             } while (cursor.moveToNext());
         }
@@ -290,7 +295,7 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(ITEM_TABLE, null,
                 DB.ITEM_TABLE.KEY_BOOK_ID + "=? AND " + DB.ITEM_TABLE.KEY_CHAPTER_ID + "=?",
-                new String[]{""+bookID, ""+chapterID},
+                new String[]{"" + bookID, "" + chapterID},
                 null, null,
                 DB.ITEM_TABLE.KEY_CHAPTER + " ASC",
                 null);
@@ -315,11 +320,22 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
                 data.mRawData14 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_08));
                 data.mRawData15 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_09));
                 data.mRawData16 = cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_10));
+                data.mRawData17 = cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_MARKING));
                 dataList.add(data);
             } while (cursor.moveToNext());
         }
 
         return dataList;
+    }
+
+    public void setItemMarking(int itemId, boolean isMarked) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DB.ITEM_TABLE.KEY_MARKING, isMarked?1:0);
+        db.update(ITEM_TABLE, values, DB.BOOK_TABLE.KEY_ID + "=?", new String[]{"" + itemId});
+
+        db.close();
     }
 
     public void clear() {
@@ -346,6 +362,7 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
                 +", index in chapter="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_INDEX_IN_CHAPTER))
                 +", book id="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_BOOK_ID))
                 +", chapter id="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_CHAPTER_ID))
+                +", marking="+ cursor.getInt(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_MARKING))
                 +", data01="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_01))
                 +", data02="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_02))
                 +", data03="+ cursor.getString(cursor.getColumnIndex(DB.ITEM_TABLE.KEY_DATA_03))

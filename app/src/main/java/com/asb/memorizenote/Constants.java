@@ -93,7 +93,7 @@ public class Constants {
     }
 
     public static class DB {
-        public static final int VERSION = 1;
+        public static final int VERSION = 2;
         public static final String NAME = "memorizedb";
 
         public static class BOOK_TABLE {
@@ -123,6 +123,7 @@ public class Constants {
             public static final String KEY_BOOK_NAME = "book_name";
             public static final String KEY_INDEX_IN_CHAPTER = "index_in_chapter";
             public static final String KEY_CHAPTER = "chapter";
+            public static final String KEY_MARKING = "marking";
             public static final String KEY_DATA_01 = "data_01";
             public static final String KEY_DATA_02 = "data_02";
             public static final String KEY_DATA_03 = "data_03";

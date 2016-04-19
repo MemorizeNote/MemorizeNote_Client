@@ -20,7 +20,8 @@ public class RawData {
     public Object mRawData14 = null;
     public Object mRawData15 = null;
     public Object mRawData16 = null;
-    public Object[] mRawDataArr = new Object[16];
+    public Object mRawData17 = null;
+    public Object[] mRawDataArr = new Object[17];
 
     public void flattenData() {
         mRawData01 = mRawDataArr[0];
@@ -39,5 +40,6 @@ public class RawData {
         mRawData14 = mRawDataArr[13];
         mRawData15 = mRawDataArr[14];
         mRawData16 = mRawDataArr[15];
+        mRawData17 = mRawDataArr[16];
     }
 }

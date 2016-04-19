@@ -41,6 +41,7 @@ public class SimpleVocaData extends BaseItemData {
 
         mWord = (String)rawData.mRawData07;
         mMeaning = (String)rawData.mRawData08;
+        mMarking = (Integer)rawData.mRawData17 == 1?true:false;
     }
 
     @Override

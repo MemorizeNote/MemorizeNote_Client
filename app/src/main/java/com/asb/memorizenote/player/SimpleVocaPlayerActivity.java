@@ -114,6 +114,13 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        mAdapter.save();
+    }
+
+    @Override
     protected void onPreviousChapter() {
         SimpleVocaData data = (SimpleVocaData)mAdapter.previousChapter();
 

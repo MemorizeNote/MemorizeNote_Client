@@ -5,9 +5,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.asb.memorizenote.Constants;
+import com.asb.memorizenote.data.AbstractData;
 import com.asb.memorizenote.data.BaseBookData;
 import com.asb.memorizenote.data.BaseChapterData;
 import com.asb.memorizenote.data.RawData;
+import com.asb.memorizenote.data.db.MemorizeDBHelper;
 import com.asb.memorizenote.player.data.SimpleVocaData;
 import com.asb.memorizenote.utils.MNLog;
 
@@ -19,9 +21,11 @@ import java.util.ArrayList;
 public class SimpleVocaAdapter extends AbstractPlayerAdapter {
 
     BaseBookData mUpdatedBook;
+    MemorizeDBHelper mDBHelper;
 
     public SimpleVocaAdapter(Context context) {
         super(context);
+        mDBHelper = new MemorizeDBHelper(mContext);
     }
 
     @Override
@@ -73,7 +77,7 @@ public class SimpleVocaAdapter extends AbstractPlayerAdapter {
 
     @Override
     public void onItemList(ArrayList<RawData> dataList) {
-        MNLog.d("onItemList, data size="+dataList.size()+", reader type="+mCurrentReader.getReaderType());
+        MNLog.d("onItemList, data size=" + dataList.size() + ", reader type=" + mCurrentReader.getReaderType());
 
         //DB로 부터 데이터를 읽어들이는 과정
         if(mCurrentReader.getReaderType() == Constants.ReaderType.DB) {
@@ -109,6 +113,12 @@ public class SimpleVocaAdapter extends AbstractPlayerAdapter {
 
                 ++indexInChapter;
             }
+        }
+    }
+
+    public void save() {
+        for(AbstractData data  : mItemList) {
+            mDBHelper.setItemMarking(((SimpleVocaData)data).mID, ((SimpleVocaData)data).mMarking);
         }
     }
 
