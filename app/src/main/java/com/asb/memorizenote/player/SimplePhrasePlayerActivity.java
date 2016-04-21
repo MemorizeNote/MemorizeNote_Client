@@ -32,6 +32,11 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
     boolean mIsSpellingShown = false;
     boolean mIsMeaningShown = false;
 
+    int mShowingDifficulty = SimplePhraseData.DIFFICULTY_NORMAL;
+    boolean mIsRandomMode = false;
+    TextView mDifficultyView;
+    TextView mRandomModeView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +44,9 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout content = (LinearLayout)inflater.inflate(R.layout.activity_simple_phrase_player, null);
         setContent(content);
+
+        mDifficultyView = (TextView)findViewById(R.id.simple_phrase_player_status_difficulty);
+        mRandomModeView = (TextView)findViewById(R.id.simple_phrase_player_status_random);
 
         mPhraseView = (TextView)findViewById(R.id.simple_phrase_player_phrase);
         mSpellingView = (TextView)findViewById(R.id.simple_phrase_player_spelling);
@@ -146,6 +154,52 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
         showPhrase();
     }
 
+    private void increaseDifficultyFilter() {
+        if(mCurrentPhrase.mDifficulty >= SimplePhraseData.DIFFICULTY_VERY_HARD)
+            return ;
+
+        ++mShowingDifficulty;
+
+        mDifficultyView.setText("Diff:" + getDifficultyPhrase());
+    }
+
+    private void decreaseDiffucultyFilter() {
+        if(mCurrentPhrase.mDifficulty <= SimplePhraseData.DIFFICULTY_EASY)
+            return ;
+
+        --mShowingDifficulty;
+
+        mDifficultyView.setText("Diff:"+getDifficultyPhrase());
+    }
+
+    private String getDifficultyPhrase() {
+        switch(mShowingDifficulty) {
+            case SimplePhraseData.DIFFICULTY_EASY:
+                return "EASY";
+            case SimplePhraseData.DIFFICULTY_NORMAL:
+                return "NORMAL";
+            case SimplePhraseData.DIFFICULTY_HARD:
+                return "HARD";
+            case SimplePhraseData.DIFFICULTY_VERY_HARD:
+                return "VHARD";
+            default:
+                return "NORMAL";
+        }
+    }
+
+    private void toggleRandomMode() {
+        if(mIsRandomMode) {
+            mAdapter.unrandomize();
+            mRandomModeView.setText("Random:OFF");
+        }
+        else {
+            mAdapter.randomize();
+            mRandomModeView.setText("Random:ON");
+        }
+
+        mIsRandomMode = !mIsRandomMode;
+    }
+
     @Override
     protected void onMenuButtonPressed() {
 
@@ -153,6 +207,7 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
 
     @Override
     protected void onBackButtonPressed() {
+        mAdapter.unrandomize();
         finish();
     }
 
@@ -174,6 +229,15 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
             case KeyEvent.KEYCODE_6:
                 onNextContent();
                 break;
+            case KeyEvent.KEYCODE_1:
+                increaseDifficultyFilter();
+                break;
+            case KeyEvent.KEYCODE_7:
+                decreaseDiffucultyFilter();
+                break;
+            case KeyEvent.KEYCODE_3:
+                toggleRandomMode();
+                break;
         }
     }
 
@@ -183,6 +247,8 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
             showToast("첫 챕터 입니다.");
             return;
         }
+
+
 
         showPhrase();
     }
@@ -199,21 +265,35 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
 
     @Override
     protected void onPreviousContent() {
-        if(mAdapter.previous() == null) {
+        SimplePhraseData data;
+
+        do {
+            data = (SimplePhraseData)mAdapter.previous();
+        } while(data != null && data.mDifficulty < mShowingDifficulty);
+
+        if(data == null) {
             showToast("처음 입니다.");
             return;
         }
 
+        mCurrentPhrase = data;
         showPhrase();
     }
 
     @Override
     protected void onNextContent() {
-        if(mAdapter.next() == null) {
+        SimplePhraseData data;
+
+        do {
+            data = (SimplePhraseData)mAdapter.next();
+        } while(data != null && data.mDifficulty < mShowingDifficulty);
+
+        if(data == null) {
             showToast("마지막 입니다.");
             return;
         }
 
+        mCurrentPhrase = data;
         showPhrase();
     }
 
