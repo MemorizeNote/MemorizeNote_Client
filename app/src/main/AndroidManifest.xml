@@ -37,6 +37,10 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
+            android:name=".player.SimplePhrasePlayerActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity
             android:name=".widget.libraryseat.LibrarySeatsViewActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 

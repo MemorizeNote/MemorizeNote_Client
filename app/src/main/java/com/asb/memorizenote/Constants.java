@@ -26,6 +26,7 @@ public class Constants {
         public static final int SIMPLE_VOCA = 0;
         public static final int SIMPLE_MEMORIZE = 1;
         public static final int SIMPLE_OX_QUIZ = 2;
+        public static final int SIMPLE_PHRASE = 3;
         public static final int NAME_LIST_DATA = 9999;
 
         public static int getType(String typeName) {
@@ -35,6 +36,8 @@ public class Constants {
                 return SIMPLE_MEMORIZE;
             else if(typeName.equals("SimpleOXQuiz"))
                 return SIMPLE_OX_QUIZ;
+            else if(typeName.equals("SimplePhrase"))
+                return SIMPLE_PHRASE;
             else
                 return NONE;
         }
@@ -45,6 +48,7 @@ public class Constants {
                 case SIMPLE_MEMORIZE:
                 case SIMPLE_OX_QUIZ:
                 case NAME_LIST_DATA:
+                case SIMPLE_PHRASE:
                     return true;
                 default:
                     return false;

@@ -6,6 +6,7 @@ import com.asb.memorizenote.Constants;
 import com.asb.memorizenote.data.apater.AbstractAdapter;
 import com.asb.memorizenote.player.adapter.SimpleMemorizeAdapter;
 import com.asb.memorizenote.player.adapter.SimpleOXQuizAdapter;
+import com.asb.memorizenote.player.adapter.SimplePhraseAdapter;
 import com.asb.memorizenote.player.adapter.SimpleVocaAdapter;
 
 import java.io.File;
@@ -35,6 +36,8 @@ public class Utils {
                 return new SimpleMemorizeAdapter(context);
             case Constants.BookType.SIMPLE_OX_QUIZ:
                 return new SimpleOXQuizAdapter(context);
+            case Constants.BookType.SIMPLE_PHRASE:
+                return new SimplePhraseAdapter(context);
             default:
                 return null;
         }

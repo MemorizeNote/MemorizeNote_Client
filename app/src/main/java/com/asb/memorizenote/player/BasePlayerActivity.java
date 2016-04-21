@@ -88,6 +88,9 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
             case BookType.SIMPLE_OX_QUIZ:
                 intent.setClass(context, SimpleOXQuizPlayerActivity.class);
                 return intent;
+            case BookType.SIMPLE_PHRASE:
+                intent.setClass(context, SimplePhrasePlayerActivity.class);
+                return intent;
             default:
                 return null;
         }

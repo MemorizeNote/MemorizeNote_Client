@@ -22,14 +22,25 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/base_player_content_wrapper"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@id/base_player_chapter_wrapper"
-        android:orientation="vertical"
-        android:layout_weight="0.9">
+        android:layout_weight="0.9"
+        android:layout_below="@id/base_player_chapter_wrapper">
 
-    </LinearLayout>
+        <ListView
+            android:id="@+id/base_player_category"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"></ListView>
+
+        <LinearLayout
+            android:id="@+id/base_player_content_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.asb.memorizenote.Constants.DB;
 import com.asb.memorizenote.data.BaseChapterData;
+import com.asb.memorizenote.data.BaseItemData;
 import com.asb.memorizenote.data.RawData;
 
 import java.util.ArrayList;
@@ -334,6 +335,14 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(DB.ITEM_TABLE.KEY_MARKING, isMarked?1:0);
         db.update(ITEM_TABLE, values, DB.BOOK_TABLE.KEY_ID + "=?", new String[]{"" + itemId});
+
+        db.close();
+    }
+
+    public void updateItem(BaseItemData item) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.update(ITEM_TABLE, item.toContentValues(), DB.BOOK_TABLE.KEY_ID + "=?", new String[]{"" + item.mID});
 
         db.close();
     }
