@@ -59,7 +59,7 @@ public class SimpleOXQuizPlayerActivity extends BasePlayerActivity {
             });
         }
 
-        mAdapter = (SimpleOXQuizAdapter)((MemorizeNoteApplication) getApplication()).getDataAdpaterManager().getItemListAdapter(mBookName);
+        mAdapter = (SimpleOXQuizAdapter)mAbstractAdapter;
 
         mCurrentQuestion = (SimpleOXQuizData)mAdapter.first();
         showQuestion();
@@ -75,7 +75,7 @@ public class SimpleOXQuizPlayerActivity extends BasePlayerActivity {
         mQuestionView.setText(mCurrentQuestion.mQuestion);
 
         //정답 표시
-        mAnswerView.setText("정답:" + (mCurrentQuestion.mAnswer==1? mCurrentQuestion.mExample1 : mCurrentQuestion.mExample2));
+        mAnswerView.setText("정답:" + (mCurrentQuestion.mAnswer == 1 ? mCurrentQuestion.mExample1 : mCurrentQuestion.mExample2));
         mAnswerView.setTextColor(Color.BLACK);
 
         mAnswerCorrect.setText(mCurrentQuestion.mExample1);
@@ -161,6 +161,13 @@ public class SimpleOXQuizPlayerActivity extends BasePlayerActivity {
             showToast("마지막 문제 입니다.");
             return;
         }
+
+        showQuestion();
+    }
+
+    @Override
+    protected void onJumpToChapter(int chapter) {
+        super.onJumpToChapter(chapter);
 
         showQuestion();
     }

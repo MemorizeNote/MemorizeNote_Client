@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.asb.memorizenote.MemorizeNoteApplication;
 import com.asb.memorizenote.R;
 import com.asb.memorizenote.player.adapter.SimplePhraseAdapter;
 import com.asb.memorizenote.player.data.SimplePhraseData;
@@ -45,7 +44,7 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
         mSpellingView = (TextView)findViewById(R.id.simple_phrase_player_spelling);
         mMeaningView = (TextView)findViewById(R.id.simple_phrase_player_meaning);
 
-        mAdapter = (SimplePhraseAdapter)((MemorizeNoteApplication) getApplication()).getDataAdpaterManager().getItemListAdapter(mBookName);
+        mAdapter = (SimplePhraseAdapter)mAbstractAdapter;
 
         mSpellingVisibleList = new ArrayList<>();
         mMeaningVisibleList = new ArrayList<>();
@@ -69,6 +68,8 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
         mSpellingView.setText(mCurrentPhrase.mSpelling);
         mMeaningView.setText(mCurrentPhrase.mMeaning);
         setViewVisibility(mSpellingVisibleList.get(mAdapter.currentPosition()), mMeaningVisibleList.get(mAdapter.currentPosition()));
+
+        setChapterTitle(mCurrentPhrase.mChapterName, mAdapter.getCurrentItemIndex(), mAdapter.getCurrentChapterSize());
     }
 
     private void toggleViewVisibility() {
@@ -212,6 +213,13 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
             showToast("마지막 입니다.");
             return;
         }
+
+        showPhrase();
+    }
+
+    @Override
+    protected void onJumpToChapter(int chapter) {
+        super.onJumpToChapter(chapter);
 
         showPhrase();
     }

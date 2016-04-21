@@ -9,12 +9,16 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.asb.memorizenote.Constants.*;
+import com.asb.memorizenote.MemorizeNoteApplication;
 import com.asb.memorizenote.R;
+import com.asb.memorizenote.player.adapter.AbstractPlayerAdapter;
 import com.asb.memorizenote.ui.BaseActivity;
 import com.asb.memorizenote.utils.MNLog;
 
@@ -46,6 +50,9 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     private HashMap<Integer, Integer> mPointerMap = new HashMap<>();
 
     protected boolean mIsSmallMode = false;
+
+    protected AbstractPlayerAdapter mAbstractAdapter;
+    ListView mChapterListView;
 
     protected int mDataType = BookType.NONE;
     protected String mBookName = null;
@@ -120,15 +127,23 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
         mChapterWrapper = (LinearLayout)findViewById(R.id.base_player_chapter_wrapper);
         mChapterTitle = (TextView)findViewById(R.id.base_player_chapter_title);
-        /*
-        mChapterTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-        */
 
         mContentWrapper = (LinearLayout)findViewById(R.id.base_player_content_wrapper);
+
+        //Init chapter list view
+        mAbstractAdapter = (AbstractPlayerAdapter)((MemorizeNoteApplication) getApplication()).getDataAdpaterManager().getItemListAdapter(mBookName);
+        mAbstractAdapter.setDataType(AdapterDataType.CHAPTER);
+        mChapterListView = (ListView)findViewById(R.id.base_player_chapter_list);
+        mChapterListView.setAdapter(mAbstractAdapter);
+        mChapterListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                toggleChapterList();
+                onJumpToChapter(position);
+            }
+        });
+        mAbstractAdapter.notifyDataSetChanged();
+        mAbstractAdapter.setDataType(AdapterDataType.ITEM);
 
         if(mIsSmallMode) {
 
@@ -158,7 +173,7 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     }
 
     protected void setChapterTitle(String chapterTitle, int currentItemIndex, int totalItemSize) {
-        mChapterTitle.setText(chapterTitle+"("+currentItemIndex+"/"+totalItemSize+")");
+        mChapterTitle.setText(chapterTitle + "(" + currentItemIndex + "/" + totalItemSize + ")");
     }
 
     protected void setContent(View view) {
@@ -205,6 +220,9 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
             MNLog.d("key down:" + keyCode);
 
             switch(keyCode) {
+                case KeyEvent.KEYCODE_CALL:
+                    toggleChapterList();
+                    return true;
                 case KeyEvent.KEYCODE_DPAD_LEFT:
                     onPreviousContent();
                     return true;
@@ -380,12 +398,32 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     abstract protected void onPreviousChapter();
     abstract protected void onNextChapter();
 
+    protected void onJumpToChapter(int chapter) {
+        mAbstractAdapter.jumpToChapter(chapter);
+    }
+
     abstract protected void onPreviousContent();
     abstract protected void onNextContent();
 
     protected void onExtraKeyUp(int keyCode) {
         MNLog.d("extra key="+keyCode+", but no handle in BasePlayerActivity...");
     }
+
+    protected void toggleChapterList() {
+        if(mChapterListView.getVisibility()  == View.GONE) {
+            mAbstractAdapter.setDataType(AdapterDataType.CHAPTER);
+
+            mContentWrapper.setVisibility(View.GONE);
+            mChapterListView.setVisibility(View.VISIBLE);
+        }
+        else {
+            mAbstractAdapter.setDataType(AdapterDataType.ITEM);
+
+            mContentWrapper.setVisibility(View.VISIBLE);
+            mChapterListView.setVisibility(View.GONE);
+        }
+    }
+
 
     protected void onFlingUp() {
         MNLog.d("onFlingUp");

@@ -1,7 +1,14 @@
 package com.asb.memorizenote.player.adapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.TextView;
 
+import com.asb.memorizenote.R;
 import com.asb.memorizenote.data.BaseItemData;
 import com.asb.memorizenote.data.apater.AbstractAdapter;
 import com.asb.memorizenote.data.db.MemorizeDBHelper;
@@ -29,15 +36,18 @@ public abstract class AbstractPlayerAdapter extends AbstractAdapter {
     protected boolean mIsRandomized;
     protected int[] mRandomizedIdx;
 
+    private LayoutInflater mInflater;
+
     public AbstractPlayerAdapter(Context context) {
         super(context);
 
+        mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mTotalItemPerChapter = new ArrayList<>();
         mIsRandomized = false;
     }
 
     public BaseItemData current() {
-        return mItemList.get(mIsRandomized?mRandomizedIdx[mCurItem]:mCurItem);
+        return mItemList.get(mIsRandomized ? mRandomizedIdx[mCurItem] : mCurItem);
     }
 
     public BaseItemData first() {
@@ -142,7 +152,36 @@ public abstract class AbstractPlayerAdapter extends AbstractAdapter {
     }
 
     public BaseItemData jumpToChapter(int chapter) {
-        return null;
+        MNLog.d("jumpToChapter, chapter="+chapter);
+
+        //nextChapter/previousChapter를 몇 회 실행할지 결정한다.
+        int loopCount = chapter - mCurChapter;
+        MNLog.d("loop count="+loopCount);
+
+        BaseItemData firstItemDataInChapter = null;
+        BaseItemData tempItem;
+        //현재 챕터보다 이후의 챕터로 이동한다.
+        if(loopCount > 0) {
+            for(int i=0; i<loopCount; i++) {
+                if((tempItem = nextChapter()) == null)
+                    break;
+
+                firstItemDataInChapter = tempItem;
+            }
+        }
+        //현재 챕터보다 이전의 챕터로 이동한다.
+        else if(loopCount < 0) {
+            loopCount = Math.abs(loopCount);
+
+            for(int i=0; i<loopCount; i++) {
+                if((tempItem = previousChapter()) == null)
+                    break;
+
+                firstItemDataInChapter = tempItem;
+            }
+        }
+
+        return firstItemDataInChapter;
     }
 
     public int currentPosition() {
@@ -210,6 +249,30 @@ public abstract class AbstractPlayerAdapter extends AbstractAdapter {
 
     public void unrandomize() {
         mIsRandomized = false;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if(convertView == null) {
+            convertView = mInflater.inflate(R.layout.base_player_chapter_list_item, null, false);
+        }
+
+        ((TextView)convertView.findViewById(R.id.base_player_chapter_list_name)).setText(mChapterList.get(position).mName);
+
+        /*
+        ((CheckBox)convertView.findViewById(R.id.file_update_file_list_item_select)).setTag(position);
+        ((CheckBox)convertView.findViewById(R.id.file_update_file_list_item_select)).setFocusable(false);
+        ((CheckBox)convertView.findViewById(R.id.file_update_file_list_item_select)).setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                    mDataList.get((Integer)buttonView.getTag()).mSelected = true;
+                else
+                    mDataList.get((Integer)buttonView.getTag()).mSelected = false;
+            }
+        });
+        */
+        return convertView;
     }
 
     public int getCurrentChapterSize() {

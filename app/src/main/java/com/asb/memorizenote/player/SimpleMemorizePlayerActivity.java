@@ -88,6 +88,11 @@ public class SimpleMemorizePlayerActivity extends BasePlayerActivity {
     }
 
     @Override
+    protected void onJumpToChapter(int chapter) {
+
+    }
+
+    @Override
     protected void onPreviousContent() {
         SimpleMemorizeData data = (SimpleMemorizeData)mAdapter.previous();
 

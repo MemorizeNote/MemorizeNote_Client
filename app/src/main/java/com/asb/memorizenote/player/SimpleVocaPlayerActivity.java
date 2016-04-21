@@ -57,7 +57,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         mStatusMarking = (TextView)content.findViewById(R.id.simple_voca_player_status_marking);
         mStatusMarking.setTag(false);
 
-        mAdapter = (SimpleVocaAdapter)((MemorizeNoteApplication) getApplication()).getDataAdpaterManager().getItemListAdapter(mBookName);
+        mAdapter = (SimpleVocaAdapter)mAbstractAdapter;
 
         mMeaningDismissList = new ArrayList<>();
         int itemCount = mAdapter.getCount();
@@ -163,6 +163,13 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
             setWordAndMeaning(data);
         else
             showToast("마지막 단어 입니다.");
+    }
+
+    @Override
+    protected void onJumpToChapter(int chapter) {
+        super.onJumpToChapter(chapter);
+
+        setWordAndMeaning((SimpleVocaData)mAdapter.current());
     }
 
     private void setWordAndMeaning(SimpleVocaData data) {
