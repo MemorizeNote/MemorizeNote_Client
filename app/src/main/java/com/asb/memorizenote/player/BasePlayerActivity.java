@@ -2,8 +2,10 @@ package com.asb.memorizenote.player;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +45,8 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     private TouchType mTouchType;
     private HashMap<Integer, Integer> mPointerMap = new HashMap<>();
 
+    protected boolean mSmallMode = false;
+
     protected int mDataType = BookType.NONE;
     protected String mBookName = null;
     protected int mStartChapter = 0;
@@ -62,16 +66,17 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     protected Button mExtraButton04 = null;
     private Button[] mExtraButtons = new Button[4];
 
-    private GestureDetector mGestureDetector;
+    private GestureDetector mGestureDetector = null;
 
     public static Intent getLaunchingIntent(Context context, String bookName, int dataType, int startChapter, int endChapter) {
-        MNLog.d("getLaunchingIntent, book name="+bookName);
+        MNLog.d("getLaunchingIntent, book name=" + bookName);
 
         Intent intent = new Intent();
         intent.putExtra(IntentFlags.BasePlayer.DATA_TYPE, dataType);
         intent.putExtra(IntentFlags.BasePlayer.BOOK_NAME, bookName);
         intent.putExtra(IntentFlags.BasePlayer.START_CHAPTER, startChapter);
         intent.putExtra(IntentFlags.BasePlayer.END_CHAPTER, endChapter);
+        intent.putExtra(IntentFlags.BasePlayer.DEVICE_MODEL, Build.MODEL.toUpperCase());
 
         switch(dataType) {
             case BookType.SIMPLE_VOCA:
@@ -92,6 +97,12 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
         Intent launchIntent = getIntent();
 
+        /*
+         * 전체적인 동작을 터치로 할지 키패드로 할지 결정하는 변수
+         * F440L만 지원함
+         */
+        mSmallMode = launchIntent.getStringExtra(IntentFlags.BasePlayer.DEVICE_MODEL).contains("F440L");
+
         mDataType = launchIntent.getIntExtra(IntentFlags.BasePlayer.DATA_TYPE, BookType.NONE);
         if(!BookType.isValidType(mDataType)) {
             finish();
@@ -101,35 +112,126 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
         mStartChapter = launchIntent.getIntExtra(IntentFlags.BasePlayer.START_CHAPTER, 0);
         mEndChapter = launchIntent.getIntExtra(IntentFlags.BasePlayer.START_CHAPTER, 0);
 
-        mGestureDetector = new GestureDetector(getApplicationContext(), this, null);
-
         mChapterWrapper = (LinearLayout)findViewById(R.id.base_player_chapter_wrapper);
-
         mChapterTitle = (TextView)findViewById(R.id.base_player_chapter_title);
+        /*
         mChapterTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MNLog.d("!@#!@#!@#!@#");
             }
         });
-
+        */
 
         mContentWrapper = (LinearLayout)findViewById(R.id.base_player_content_wrapper);
 
-        mExtraButtonsWrapper = (LinearLayout)findViewById(R.id.base_player_extra_buttons_wrapper);
-        mExtraButton01 = (Button)findViewById(R.id.base_player_extra_btn_1);
-        mExtraButton01.setVisibility(View.INVISIBLE);
-        mExtraButton02 = (Button)findViewById(R.id.base_player_extra_btn_2);
-        mExtraButton02.setVisibility(View.INVISIBLE);
-        mExtraButton03 = (Button)findViewById(R.id.base_player_extra_btn_3);
-        mExtraButton03.setVisibility(View.INVISIBLE);
-        mExtraButton04 = (Button)findViewById(R.id.base_player_extra_btn_4);
-        mExtraButton04.setVisibility(View.INVISIBLE);
+        if(mSmallMode) {
 
-        mExtraButtons[0] = mExtraButton01;
-        mExtraButtons[1] = mExtraButton02;
-        mExtraButtons[2] = mExtraButton03;
-        mExtraButtons[3] = mExtraButton04;
+        }
+        else {
+            mGestureDetector = new GestureDetector(getApplicationContext(), this, null);
+
+            mExtraButtonsWrapper = (LinearLayout) findViewById(R.id.base_player_extra_buttons_wrapper);
+            mExtraButton01 = (Button) findViewById(R.id.base_player_extra_btn_1);
+            mExtraButton01.setVisibility(View.INVISIBLE);
+            mExtraButton02 = (Button) findViewById(R.id.base_player_extra_btn_2);
+            mExtraButton02.setVisibility(View.INVISIBLE);
+            mExtraButton03 = (Button) findViewById(R.id.base_player_extra_btn_3);
+            mExtraButton03.setVisibility(View.INVISIBLE);
+            mExtraButton04 = (Button) findViewById(R.id.base_player_extra_btn_4);
+            mExtraButton04.setVisibility(View.INVISIBLE);
+
+            mExtraButtons[0] = mExtraButton01;
+            mExtraButtons[1] = mExtraButton02;
+            mExtraButtons[2] = mExtraButton03;
+            mExtraButtons[3] = mExtraButton04;
+        }
+    }
+
+    protected void setChapterTitle(String chapterTitle) {
+        mChapterTitle.setText(chapterTitle);
+    }
+
+    protected void setContent(View view) {
+        mContentWrapper.addView(view);
+        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        if(mSmallMode) {
+
+        }
+        else {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    int pointerIndex = event.getActionIndex();
+                    int pointerID = event.getPointerId(pointerIndex);
+
+                    if (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
+                        mPointerMap.put(pointerID, pointerIndex);
+                    }
+
+                    mGestureDetector.onTouchEvent(event);
+                    return true;
+                }
+            });
+        }
+    }
+
+    protected void setExtraButton(String name, View.OnClickListener listener) {
+        if(mCurrentExtraBtnNum >= MAX_EXTRA_BTN_NUM)
+            return;
+
+        Button targetExtraButton = mExtraButtons[mCurrentExtraBtnNum];
+        targetExtraButton.setText(name);
+        targetExtraButton.setOnClickListener(listener);
+        targetExtraButton.setVisibility(View.VISIBLE);
+
+        ++mCurrentExtraBtnNum;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if(mSmallMode) {
+            MNLog.d("key down:" + keyCode);
+
+            switch(keyCode) {
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    onPreviousContent();
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    onNextContent();
+                    return true;
+                case KeyEvent.KEYCODE_BACK:
+                    onBackButtonPressed();
+                    return true;
+                case KeyEvent.KEYCODE_MENU:
+                    onMenuButtonPressed();
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_UP:
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                case KeyEvent.KEYCODE_DPAD_CENTER:
+                case KeyEvent.KEYCODE_CAMERA:
+                case KeyEvent.KEYCODE_CONTACTS:
+                case KeyEvent.KEYCODE_1:
+                case KeyEvent.KEYCODE_2:
+                case KeyEvent.KEYCODE_3:
+                case KeyEvent.KEYCODE_4:
+                case KeyEvent.KEYCODE_5:
+                case KeyEvent.KEYCODE_6:
+                case KeyEvent.KEYCODE_7:
+                case KeyEvent.KEYCODE_8:
+                case KeyEvent.KEYCODE_9:
+                case KeyEvent.KEYCODE_0:
+                case KeyEvent.KEYCODE_STAR:
+                case KeyEvent.KEYCODE_POUND:
+                    onExtraKeyUp(keyCode);
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        else
+            return false;
     }
 
     @Override
@@ -258,11 +360,18 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
         mPointerMap.clear();
     }
 
+    abstract protected void onMenuButtonPressed();
+    abstract protected void onBackButtonPressed();
+
     abstract protected void onPreviousChapter();
     abstract protected void onNextChapter();
 
     abstract protected void onPreviousContent();
     abstract protected void onNextContent();
+
+    protected void onExtraKeyUp(int keyCode) {
+        MNLog.d("extra key="+keyCode+", but no handle in BasePlayerActivity...");
+    }
 
     protected void onFlingUp() {
         MNLog.d("onFlingUp");
@@ -277,42 +386,4 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     protected void onDoubleTap() {
         MNLog.d("onDoubleTap");
     }
-
-    protected void setChapterTitle(String chapterTitle) {
-        mChapterTitle.setText(chapterTitle);
-    }
-
-    protected void setContent(View view) {
-        mContentWrapper.addView(view);
-        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                int pointerIndex = event.getActionIndex();
-                int pointerID = event.getPointerId(pointerIndex);
-
-                if(event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
-                    mPointerMap.put(pointerID, pointerIndex);
-                }
-
-                mGestureDetector.onTouchEvent(event);
-                return true;
-            }
-        });
-    }
-
-    protected void setExtraButton(String name, View.OnClickListener listener) {
-        if(mCurrentExtraBtnNum >= MAX_EXTRA_BTN_NUM)
-            return;
-
-        Button targetExtraButton = mExtraButtons[mCurrentExtraBtnNum];
-        targetExtraButton.setText(name);
-        targetExtraButton.setOnClickListener(listener);
-        targetExtraButton.setVisibility(View.VISIBLE);
-
-        ++mCurrentExtraBtnNum;
-    }
-
-
 }

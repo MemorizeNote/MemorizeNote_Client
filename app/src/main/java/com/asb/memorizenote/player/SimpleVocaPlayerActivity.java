@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -15,6 +16,7 @@ import com.asb.memorizenote.MemorizeNoteApplication;
 import com.asb.memorizenote.R;
 import com.asb.memorizenote.player.adapter.SimpleVocaAdapter;
 import com.asb.memorizenote.player.data.SimpleVocaData;
+import com.asb.memorizenote.utils.MNLog;
 
 import java.util.ArrayList;
 
@@ -26,13 +28,11 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
     TextView mWordView;
     TextView mMeaningView;
     TextView mStatusRandom;
-    TextView mStatusAuto;
+    TextView mStatusMarking;
 
     ArrayList<Boolean> mMeaningDismissList;
 
     SimpleVocaAdapter mAdapter;
-
-    AutoPlayingRunnable mAutoPlayer;
 
     boolean mIsAllDismissed = false;
     boolean mIsRandomized = false;
@@ -53,8 +53,8 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
         mStatusRandom = (TextView)content.findViewById(R.id.simple_voca_player_status_random);
         mStatusRandom.setTag(false);
-        mStatusAuto = (TextView)content.findViewById(R.id.simple_voca_player_status_auto);
-        mStatusAuto.setTag(false);
+        mStatusMarking = (TextView)content.findViewById(R.id.simple_voca_player_status_marking);
+        mStatusMarking.setTag(false);
 
         mAdapter = (SimpleVocaAdapter)((MemorizeNoteApplication) getApplication()).getDataAdpaterManager().getItemListAdapter(mBookName);
 
@@ -66,51 +66,28 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         SimpleVocaData data = (SimpleVocaData)mAdapter.first();
         setWordAndMeaning(data);
 
-        setExtraButton("Rnd", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mIsRandomized) {
-                    mAdapter.unrandomize();
-                    mStatusRandom.setText("Random:OFF");
-                } else {
-                    mAdapter.randomize();
-                    mStatusRandom.setText("Random:ON");
+        if(mSmallMode) {
+
+        }
+        else {
+            setExtraButton("Rnd", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleRandomMode();
                 }
-
-                mIsRandomized = !mIsRandomized;
-            }
-        });
-        setExtraButton("Auto", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if((Boolean)mStatusAuto.getTag()) {
-                    mAutoPlayer.stop();
-
-                    mStatusAuto.setText("Auto:OFF");
-                    mStatusAuto.setTag(false);
+            });
+            setExtraButton("Mark", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleMarkingMode();
                 }
-                else {
-                    mAutoPlayer = new AutoPlayingRunnable(getApplicationContext(), mHandler);
-                    Thread t = new Thread(mAutoPlayer);
-                    t.start();
+            });
+        }
+    }
 
-                    mStatusAuto.setText("Auto:ON");
-                    mStatusAuto.setTag(true);
-                }
-            }
-        });
-        setExtraButton("Mark", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mIsRandomized) {
-                    showToast("무작위보기 해제 후 사용하세요.");
-                    return;
-                }
+    @Override
+    protected void onHandleExtraMessage(Message msg) {
 
-                mIsShowMarking = !mIsShowMarking;
-            }
-        });
     }
 
     @Override
@@ -118,6 +95,27 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         super.onPause();
 
         mAdapter.save();
+    }
+
+    @Override
+    protected void onMenuButtonPressed() {
+        showToast("** 버튼 안내 **\n"
+                        + "1번 : 랜던 on/off\n"
+                        + "2번 : 마킹 on/off\n"
+                        + "3번 : "
+        );
+    }
+
+    @Override
+    protected void onBackButtonPressed() {
+        //기타 설정된 값들을 초기화 한다.
+        mIsAllDismissed = false;
+        mIsShowMarking = false;
+        mIsRandomized = false;
+
+        mAdapter.unrandomize();
+
+        finish();
     }
 
     @Override
@@ -166,15 +164,37 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
             showToast("마지막 단어 입니다.");
     }
 
-    @Override
-    protected void onSingleTap() {
-        toggleMeaningVisibility();
+    private void setWordAndMeaning(SimpleVocaData data) {
+        mWordView.setText(data.mWord);
+        mMeaningView.setText(data.mMeaning);
 
-        super.onSingleTap();
+        if(data.mMarking)
+            mWordView.setTextColor(Color.YELLOW);
+        else
+            mWordView.setTextColor(Color.WHITE);
+
+        if(mMeaningDismissList.get(mAdapter.currentPosition()))
+            mMeaningView.setTextColor(Color.BLACK);
+        else {
+            mMeaningView.setTextColor(Color.WHITE);
+        }
+
+        setChapterTitle(data.mChapterName);
     }
 
-    @Override
-    protected void onDoubleTap() {
+    private void toggleMeaningVisibility() {
+        int curPosition = mAdapter.currentPosition();
+        boolean itemDismiss = mMeaningDismissList.get(curPosition);
+
+        if (itemDismiss) {
+            mMeaningView.setTextColor(Color.WHITE);
+        } else {
+            mMeaningView.setTextColor(Color.BLACK);
+        }
+        mMeaningDismissList.set(curPosition, !itemDismiss);
+    }
+
+    private void toggleMeaningVisibilityAll() {
         if(mIsAllDismissed) {
             mMeaningView.setTextColor(Color.BLACK);
 
@@ -201,134 +221,92 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         }
 
         mIsAllDismissed = !mIsAllDismissed;
+    }
+
+    private void setWordMarking(boolean isMarked) {
+        super.onFlingUp();
+        SimpleVocaData data = (SimpleVocaData)mAdapter.current();
+        data.mMarking = isMarked;
+
+        setWordAndMeaning(data);
+    }
+
+    private void toggleRandomMode() {
+        if (mIsRandomized) {
+            mAdapter.unrandomize();
+            mStatusRandom.setText("Random:OFF");
+        } else {
+            mAdapter.randomize();
+            mStatusRandom.setText("Random:ON");
+        }
+
+        mIsRandomized = !mIsRandomized;
+    }
+
+    private void toggleMarkingMode() {
+        if (mIsShowMarking) {
+            mStatusMarking.setText("Marking:OFF");
+        } else {
+            mStatusMarking.setText("Marking:ON");
+        }
+
+        mIsShowMarking = !mIsShowMarking;
+    }
+
+    /*
+     * Touch and Keypad Event
+     */
+    //For Keypad event listener
+    @Override
+    protected void onExtraKeyUp(int keyCode) {
+        MNLog.d("key code=" + keyCode + ", on SimpleVocaPlayer");
+        switch(keyCode) {
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                toggleMeaningVisibility();
+                break;
+            case KeyEvent.KEYCODE_CAMERA:
+                onPreviousChapter();
+                break;
+            case KeyEvent.KEYCODE_CONTACTS:
+                onNextChapter();
+                break;
+            case KeyEvent.KEYCODE_1:
+                toggleRandomMode();
+                break;
+            case KeyEvent.KEYCODE_2:
+                toggleMarkingMode();
+                break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                setWordMarking(true);
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                setWordMarking(false);
+                break;
+        }
+    }
+
+    //For touch event listener
+    @Override
+    protected void onSingleTap() {
+        toggleMeaningVisibility();
+
+        super.onSingleTap();
+    }
+
+    @Override
+    protected void onDoubleTap() {
+        toggleMeaningVisibilityAll();
 
         super.onDoubleTap();
     }
 
     @Override
     protected void onFlingUp() {
-        super.onFlingUp();
-        SimpleVocaData data = (SimpleVocaData)mAdapter.current();
-        data.mMarking = true;
-
-        setWordAndMeaning(data);
+        setWordMarking(true);
     }
 
     @Override
     protected void onFlingDown() {
-        super.onFlingDown();
-        SimpleVocaData data = (SimpleVocaData)mAdapter.current();
-        data.mMarking = false;
-
-        setWordAndMeaning(data);
-    }
-
-    @Override
-    protected void onHandleExtraMessage(Message msg) {
-        switch (msg.what) {
-            case Constants.HandlerFlags.SimpleVocalPlayerActivity.AUTO_PLAYING_INIT:
-                setMeaningVisibility(false);
-                break;
-            case Constants.HandlerFlags.SimpleVocalPlayerActivity.SHOW_MEANING:
-                setMeaningVisibility(true);
-                break;
-            case Constants.HandlerFlags.SimpleVocalPlayerActivity.HIDE_MEANING:
-                setMeaningVisibility(false);
-                break;
-            case Constants.HandlerFlags.SimpleVocalPlayerActivity.SHOW_NEXT_WORD:
-                SimpleVocaData data = (SimpleVocaData)mAdapter.next();
-                if(data != null) {
-                    setWordAndMeaning(data);
-                }
-                else {
-                    mAutoPlayer.stop();
-                }
-                break;
-        }
-    }
-
-    private void setWordAndMeaning(SimpleVocaData data) {
-        mWordView.setText(data.mWord);
-        mMeaningView.setText(data.mMeaning);
-
-        if(data.mMarking)
-            mWordView.setTextColor(Color.YELLOW);
-        else
-            mWordView.setTextColor(Color.WHITE);
-
-        if(mMeaningDismissList.get(mAdapter.currentPosition()))
-            mMeaningView.setTextColor(Color.BLACK);
-        else {
-            mMeaningView.setTextColor(Color.WHITE);
-        }
-
-        setChapterTitle(data.mChapterName);
-    }
-
-    private void setMeaningVisibility(boolean visibility){
-        int curPosition = mAdapter.currentPosition();
-
-        if (visibility) {
-            mMeaningView.setTextColor(Color.WHITE);
-        } else {
-            mMeaningView.setTextColor(Color.BLACK);
-        }
-        mMeaningDismissList.set(curPosition, visibility);
-    }
-
-    private void toggleMeaningVisibility(){
-        int curPosition = mAdapter.currentPosition();
-        boolean itemDismiss = mMeaningDismissList.get(curPosition);
-
-        if (itemDismiss) {
-            mMeaningView.setTextColor(Color.WHITE);
-        } else {
-            mMeaningView.setTextColor(Color.BLACK);
-        }
-        mMeaningDismissList.set(curPosition, !itemDismiss);
-    }
-
-    private class AutoPlayingRunnable implements Runnable {
-
-        private Context mContext;
-        private Handler mHandler;
-        private boolean mStopFlag;
-
-        public AutoPlayingRunnable(Context context, Handler handler) {
-            mContext = context;
-            mHandler = handler;
-            mStopFlag = false;
-        }
-
-        @Override
-        public void run() {
-
-            mHandler.sendEmptyMessage(Constants.HandlerFlags.SimpleVocalPlayerActivity.AUTO_PLAYING_INIT);
-
-            while(!mStopFlag) {
-                try {
-                    Thread.sleep(1500);
-                    mHandler.sendEmptyMessage(Constants.HandlerFlags.SimpleVocalPlayerActivity.SHOW_MEANING);
-
-                    Thread.sleep(1500);
-                    mHandler.sendEmptyMessage(Constants.HandlerFlags.SimpleVocalPlayerActivity.HIDE_MEANING);
-
-                    Thread.sleep(1500);
-                    mHandler.sendEmptyMessage(Constants.HandlerFlags.SimpleVocalPlayerActivity.SHOW_MEANING);
-
-                    Thread.sleep(1500);
-                    mHandler.sendEmptyMessage(Constants.HandlerFlags.SimpleVocalPlayerActivity.HIDE_MEANING);
-
-                    Thread.sleep(3000);
-                    mHandler.sendEmptyMessage(Constants.HandlerFlags.SimpleVocalPlayerActivity.SHOW_NEXT_WORD);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        public void stop() {
-            mStopFlag = true;
-        }
+        setWordMarking(false);
     }
 }

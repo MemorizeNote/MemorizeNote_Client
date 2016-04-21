@@ -68,6 +68,16 @@ public class SimpleMemorizePlayerActivity extends BasePlayerActivity {
     }
 
     @Override
+    protected void onMenuButtonPressed() {
+
+    }
+
+    @Override
+    protected void onBackButtonPressed() {
+
+    }
+
+    @Override
     protected void onPreviousChapter() {
         Log.e("MN", "onPreviousChapter");
     }

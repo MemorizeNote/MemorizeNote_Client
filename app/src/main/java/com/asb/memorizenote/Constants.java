@@ -164,6 +164,7 @@ public class Constants {
             public static final String BOOK_NAME = "book_name";
             public static final String START_CHAPTER = "start_chapter";
             public static final String END_CHAPTER = "end_chapter";
+            public static final String DEVICE_MODEL = "device_model";
         }
     }
 }

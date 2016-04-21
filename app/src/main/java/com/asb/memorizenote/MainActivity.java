@@ -1,19 +1,21 @@
 package com.asb.memorizenote;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.asb.memorizenote.Constants.HandlerFlags;
 import com.asb.memorizenote.Constants.ReaderFlags;
 import com.asb.memorizenote.data.BaseBookData;
-import com.asb.memorizenote.data.BaseItemData;
 import com.asb.memorizenote.data.apater.AbstractAdapter;
 import com.asb.memorizenote.data.apater.DataAdapterManager;
 import com.asb.memorizenote.data.db.MemorizeDBHelper;
@@ -37,6 +39,12 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager mgr = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
+        mgr.getDefaultDisplay().getMetrics(metrics);
+
+        Log.d("TAG", "densityDPI = " + metrics.densityDpi);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
