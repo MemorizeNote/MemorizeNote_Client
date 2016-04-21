@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/simple_ox_quiz_player_status_random"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:text="Random:OFF"
+            android:textColor="#FFFFFFFF"/>
+
+        <TextView
+            android:id="@+id/simple_ox_quiz_player_status_marking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:text="Marking:OFF"
+            android:textColor="#FFFFFFFF"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/simple_ox_quiz_player_answer"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:textSize="18dp"
+        android:text="정답:X"
+        android:textColor="#00000000"
+        android:paddingLeft="10dp"
+        android:password="false"
+        android:paddingTop="10dp" />
+
+    <ScrollView
+        android:id="@+id/simple_memorize_player_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:layout_margin="15dp"
+        android:background="@drawable/border">
+
+        <TextView
+            android:id="@+id/simple_ox_quiz_player_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textSize="15dp"
+            android:text="TEST\n123\n"
+            android:textColor="#FFFFFFFF"
+            android:paddingLeft="10dp"
+            android:password="false"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"/>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:weightSum="1"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/simple_ox_quiz_player_answer_o"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:text="O"/>
+
+        <Button
+            android:id="@+id/simple_ox_quiz_player_answer_x"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:text="X"/>
+
+    </LinearLayout>
+
+</LinearLayout>
