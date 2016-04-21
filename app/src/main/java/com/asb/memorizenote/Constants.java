@@ -166,5 +166,14 @@ public class Constants {
             public static final String END_CHAPTER = "end_chapter";
             public static final String DEVICE_MODEL = "device_model";
         }
+
+        public static final class WebViewActivity {
+            public static final String PAGE_TYPE = "page_type";
+            public static final String PAGE_URL = "page_url";
+
+            public static final class PageType {
+                public static final int DIC = 1;
+            }
+        }
     }
 }

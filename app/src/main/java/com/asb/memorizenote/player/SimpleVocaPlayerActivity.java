@@ -1,6 +1,7 @@
 package com.asb.memorizenote.player;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import com.asb.memorizenote.MemorizeNoteApplication;
 import com.asb.memorizenote.R;
 import com.asb.memorizenote.player.adapter.SimpleVocaAdapter;
 import com.asb.memorizenote.player.data.SimpleVocaData;
+import com.asb.memorizenote.ui.WebViewActivity;
 import com.asb.memorizenote.utils.MNLog;
 
 import java.util.ArrayList;
@@ -102,7 +104,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         showToast("** 버튼 안내 **\n"
                         + "1번 : 랜던 on/off\n"
                         + "2번 : 마킹 on/off\n"
-                        + "3번 : "
+                        + "3번 : 해당단어 사전 찾아보기"
         );
     }
 
@@ -253,6 +255,13 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         mIsShowMarking = !mIsShowMarking;
     }
 
+    private void showDictionary() {
+        SimpleVocaData data = (SimpleVocaData)mAdapter.current();
+
+        Intent intent = WebViewActivity.getLaunchingIntent(this, Constants.IntentFlags.WebViewActivity.PageType.DIC, new String[]{data.mWord});
+        startActivity(intent);
+    }
+
     /*
      * Touch and Keypad Event
      */
@@ -275,6 +284,9 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
                 break;
             case KeyEvent.KEYCODE_2:
                 toggleMarkingMode();
+                break;
+            case KeyEvent.KEYCODE_3:
+                showDictionary();
                 break;
             case KeyEvent.KEYCODE_DPAD_UP:
                 setWordMarking(true);

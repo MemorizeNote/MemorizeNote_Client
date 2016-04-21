@@ -22,6 +22,10 @@
             android:name=".ui.update.FileUpdateActivity"/>
 
         <activity
+            android:name=".ui.WebViewActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity
             android:name=".player.SimpleVocaPlayerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
