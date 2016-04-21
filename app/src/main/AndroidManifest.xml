@@ -33,6 +33,10 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
+            android:name=".player.SimpleOXQuizPlayerActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity
             android:name=".widget.libraryseat.LibrarySeatsViewActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 

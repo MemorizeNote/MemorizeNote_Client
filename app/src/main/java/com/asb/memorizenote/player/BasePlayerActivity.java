@@ -45,7 +45,7 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
     private TouchType mTouchType;
     private HashMap<Integer, Integer> mPointerMap = new HashMap<>();
 
-    protected boolean mSmallMode = false;
+    protected boolean mIsSmallMode = false;
 
     protected int mDataType = BookType.NONE;
     protected String mBookName = null;
@@ -85,6 +85,9 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
             case BookType.SIMPLE_MEMORIZE:
                 intent.setClass(context, SimpleMemorizePlayerActivity.class);
                 return intent;
+            case BookType.SIMPLE_OX_QUIZ:
+                intent.setClass(context, SimpleOXQuizPlayerActivity.class);
+                return intent;
             default:
                 return null;
         }
@@ -101,7 +104,7 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
          * 전체적인 동작을 터치로 할지 키패드로 할지 결정하는 변수
          * F440L만 지원함
          */
-        mSmallMode = launchIntent.getStringExtra(IntentFlags.BasePlayer.DEVICE_MODEL).contains("F440L");
+        mIsSmallMode = launchIntent.getStringExtra(IntentFlags.BasePlayer.DEVICE_MODEL).contains("F440L");
 
         mDataType = launchIntent.getIntExtra(IntentFlags.BasePlayer.DATA_TYPE, BookType.NONE);
         if(!BookType.isValidType(mDataType)) {
@@ -124,7 +127,7 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
         mContentWrapper = (LinearLayout)findViewById(R.id.base_player_content_wrapper);
 
-        if(mSmallMode) {
+        if(mIsSmallMode) {
 
         }
         else {
@@ -151,11 +154,15 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
         mChapterTitle.setText(chapterTitle);
     }
 
+    protected void setChapterTitle(String chapterTitle, int currentItemIndex, int totalItemSize) {
+        mChapterTitle.setText(chapterTitle+"("+currentItemIndex+"/"+totalItemSize+")");
+    }
+
     protected void setContent(View view) {
         mContentWrapper.addView(view);
         view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        if(mSmallMode) {
+        if(mIsSmallMode) {
 
         }
         else {
@@ -191,7 +198,7 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if(mSmallMode) {
+        if(mIsSmallMode) {
             MNLog.d("key down:" + keyCode);
 
             switch(keyCode) {
@@ -200,6 +207,12 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
                     return true;
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
                     onNextContent();
+                    return true;
+                case KeyEvent.KEYCODE_CAMERA:
+                    onPreviousChapter();
+                    return true;
+                case KeyEvent.KEYCODE_CONTACTS:
+                    onNextChapter();
                     return true;
                 case KeyEvent.KEYCODE_BACK:
                     onBackButtonPressed();
@@ -210,8 +223,6 @@ public abstract class BasePlayerActivity extends BaseActivity implements Gesture
                 case KeyEvent.KEYCODE_DPAD_UP:
                 case KeyEvent.KEYCODE_DPAD_DOWN:
                 case KeyEvent.KEYCODE_DPAD_CENTER:
-                case KeyEvent.KEYCODE_CAMERA:
-                case KeyEvent.KEYCODE_CONTACTS:
                 case KeyEvent.KEYCODE_1:
                 case KeyEvent.KEYCODE_2:
                 case KeyEvent.KEYCODE_3:

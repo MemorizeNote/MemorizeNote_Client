@@ -211,4 +211,12 @@ public abstract class AbstractPlayerAdapter extends AbstractAdapter {
     public void unrandomize() {
         mIsRandomized = false;
     }
+
+    public int getCurrentChapterSize() {
+        return mTotalItemPerChapter.get(mCurChapter);
+    }
+
+    public int getCurrentItemIndex() {
+        return mCurItemInChapter+1;
+    }
 }

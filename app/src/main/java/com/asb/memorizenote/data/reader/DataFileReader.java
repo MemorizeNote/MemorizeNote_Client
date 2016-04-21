@@ -84,7 +84,7 @@ public class DataFileReader extends AbstractReader {
 
                 String rawData;
                 while((rawData = reader.readLine()) != null) {
-                    Log.d("MN", rawData);
+                    Log.d("MN", "raw data="+rawData);
 
                     if(rawData.startsWith("##")) {
                         rawData = rawData.substring(2, rawData.length());

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -68,7 +67,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         SimpleVocaData data = (SimpleVocaData)mAdapter.first();
         setWordAndMeaning(data);
 
-        if(mSmallMode) {
+        if(mIsSmallMode) {
 
         }
         else {
@@ -272,12 +271,6 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         switch(keyCode) {
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 toggleMeaningVisibility();
-                break;
-            case KeyEvent.KEYCODE_CAMERA:
-                onPreviousChapter();
-                break;
-            case KeyEvent.KEYCODE_CONTACTS:
-                onNextChapter();
                 break;
             case KeyEvent.KEYCODE_1:
                 toggleRandomMode();
