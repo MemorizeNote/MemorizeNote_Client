@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.asb.memorizenote.Constants;
 import com.asb.memorizenote.data.BaseItemData;
 import com.asb.memorizenote.data.RawData;
+import com.asb.memorizenote.utils.MNLog;
 
 /**
  * Created by azureskybox on 16. 4. 21.
@@ -51,9 +52,15 @@ public class SimpleOXQuizData extends BaseItemData {
 
     @Override
     public void fromRawDataOfFile(RawData rawData) {
+
         mQuestion = (String)rawData.mRawData01;
         mExample1 = ((String)rawData.mRawData02);
         mExample2 = ((String)rawData.mRawData03);
+
+        mQuestion += "\n";
+        mQuestion += "1."+mExample1+"\n";
+        mQuestion += "2."+mExample2+"\n";
+
         mAnswer = Integer.parseInt((String) rawData.mRawData04);
     }
 

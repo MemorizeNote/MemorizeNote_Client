@@ -55,6 +55,8 @@ public class FileUpdateAdapter extends BaseAdapter {
 
         ((CheckBox)convertView.findViewById(R.id.file_update_file_list_item_select)).setTag(position);
         ((CheckBox)convertView.findViewById(R.id.file_update_file_list_item_select)).setFocusable(false);
+        ((CheckBox)convertView.findViewById(R.id.file_update_file_list_item_select)).setChecked(mDataList.get(position).mSelected);
+        /*
         ((CheckBox)convertView.findViewById(R.id.file_update_file_list_item_select)).setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -64,6 +66,7 @@ public class FileUpdateAdapter extends BaseAdapter {
                     mDataList.get((Integer)buttonView.getTag()).mSelected = false;
             }
         });
+        */
 
         return convertView;
     }

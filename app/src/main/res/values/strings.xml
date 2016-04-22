@@ -3,10 +3,12 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_delete_book">Delete Book</string>
     <string name="action_update_data">Update Data</string>
     <string name="action_db_dump">Dump DB</string>
     <string name="action_db_clear">Clear DB</string>
     <string name="action_select_files">Select Files</string>
+    <string name="action_select_all">Select All</string>
 
     <string name="action_test_seat">Test Seat</string>
 </resources>

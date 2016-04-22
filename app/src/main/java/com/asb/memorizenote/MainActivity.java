@@ -35,7 +35,10 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     DataAdapterManager mDataAdapterManager = null;
 
     ListView mMainList;
+    ListView mBookList;
     BookListAdapter mMainListAdapter;
+
+    MemorizeDBHelper mDBHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,8 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
         mDataAdapterManager = ((MemorizeNoteApplication)getApplication()).getDataAdpaterManager();
         mDataAdapterManager.initialize(this);
+
+        mDBHelper = new MemorizeDBHelper(this);
     }
 
     @Override
@@ -70,7 +75,9 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         int id = item.getItemId();
         MemorizeDBHelper helper;
         switch(id) {
-            case R.id.action_settings:
+            case R.id.action_delete_book:
+                mMainListAdapter.setDeleteMode(true);
+                mMainListAdapter.notifyDataSetChanged();
                 break;
             case R.id.action_update_data:
                 mIsUpdating = true;
@@ -85,6 +92,8 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
                 helper.clear();
                 break;
             case R.id.action_test_seat:
+                showProgress("!!!");
+                /*
                 LibrarySeatParser parser = new LibrarySeatParser(LibrarySeatParser.LIB_TYPE_PYEONGCHON);
                 parser.startParsing(new LibrarySeatParser.OnLibrarySeatsParsedListener() {
                     @Override
@@ -108,6 +117,8 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
                     }
                 });
+                */
+                //mDBHelper.deleteBook(1);
                 break;
         }
 
@@ -116,10 +127,19 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        BaseBookData bookData = (BaseBookData)mMainListAdapter.getItem(position);
-        Intent playerLaunchIntent = BasePlayerActivity.getLaunchingIntent(this, bookData.mName, bookData.mType, 0, bookData.mTotalChapter);
+        if(mMainListAdapter.isDeleteMode()) {
+            mMainListAdapter.setDeleteMode(false);
 
-        startActivity(playerLaunchIntent);
+            mDBHelper.deleteBook(((BaseBookData)mMainListAdapter.getItem(position)).mID);
+
+            mMainListAdapter.notifyDataSetChanged();
+        }
+        else {
+            BaseBookData bookData = (BaseBookData)mMainListAdapter.getItem(position);
+            Intent playerLaunchIntent = BasePlayerActivity.getLaunchingIntent(this, bookData.mName, bookData.mType, 0, bookData.mTotalChapter);
+
+            startActivity(playerLaunchIntent);
+        }
     }
 
     @Override

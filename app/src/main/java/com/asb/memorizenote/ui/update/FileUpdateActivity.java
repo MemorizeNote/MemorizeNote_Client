@@ -42,8 +42,11 @@ public class FileUpdateActivity extends BaseActivity implements AbstractAdapter.
         mFileListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((CheckBox)view.findViewById(R.id.file_update_file_list_item_select)).setChecked(true);
-                ((CheckBox)view.findViewById(R.id.file_update_file_list_item_select)).setTag(position);
+
+                //((CheckBox)view.findViewById(R.id.file_update_file_list_item_select)).setTag(position);
+                mDataList.get(position).mSelected = !mDataList.get(position).mSelected;
+                ((CheckBox)view.findViewById(R.id.file_update_file_list_item_select)).setChecked(mDataList.get(position).mSelected);
+
             }
         });
 
@@ -62,18 +65,21 @@ public class FileUpdateActivity extends BaseActivity implements AbstractAdapter.
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        showProgress("Updating...");
+
         switch(id) {
             case R.id.action_select_files:
-                ArrayList<File> selectedFileList = new ArrayList<File>();
+                Thread t1 = new Thread(new UpdateFileRunnable((MemorizeNoteApplication)getApplication(), this));
+                t1.start();
+                break;
+            case R.id.action_select_all:
                 for(UpdateFileData data : mDataList) {
-                    if(data.mSelected) {
-                        MNLog.d(data.mFileName);
-                        selectedFileList.add(data.mFile);
-                    }
+                    data.mSelected = true;
                 }
+                mFileListAdapter.notifyDataSetChanged();
 
-                showProgress("Updating...");
-                ((MemorizeNoteApplication)getApplication()).getDataAdpaterManager().update(Constants.AdapterManagerFlags.UPDATE_FROM_FILES, this, selectedFileList);
+                Thread t2 = new Thread(new UpdateFileRunnable((MemorizeNoteApplication)getApplication(), this));
+                t2.start();
                 break;
         }
 
@@ -138,6 +144,30 @@ public class FileUpdateActivity extends BaseActivity implements AbstractAdapter.
 
             mFileListAdapter = new FileUpdateAdapter(getApplicationContext(), mDataList);
             mHandler.sendEmptyMessage(Constants.HandlerFlags.FileUpdateActivity.INIT_FILE_LIST);
+        }
+    }
+
+    private class UpdateFileRunnable implements Runnable {
+
+        MemorizeNoteApplication mApplication;
+        AbstractAdapter.OnDataLoadListener mDataLoadListener;
+
+        UpdateFileRunnable(MemorizeNoteApplication application, AbstractAdapter.OnDataLoadListener listener) {
+            mApplication = application;
+            mDataLoadListener = listener;
+        }
+
+        @Override
+        public void run() {
+            ArrayList<File> selectedFileList2 = new ArrayList<File>();
+            for(UpdateFileData data : mDataList) {
+                if(data.mSelected) {
+                    MNLog.d(data.mFileName);
+                    selectedFileList2.add(data.mFile);
+                }
+            }
+
+            ((MemorizeNoteApplication)getApplication()).getDataAdpaterManager().update(Constants.AdapterManagerFlags.UPDATE_FROM_FILES, mDataLoadListener, selectedFileList2);
         }
     }
 }

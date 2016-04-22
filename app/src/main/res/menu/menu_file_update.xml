@@ -4,4 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".FileUpdateActivity">
     <item android:id="@+id/action_select_files" android:title="@string/action_select_files"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_select_all" android:title="@string/action_select_all"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>

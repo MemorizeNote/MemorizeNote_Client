@@ -1,6 +1,7 @@
 package com.asb.memorizenote;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,9 @@ import java.util.ArrayList;
  * Created by azureskybox on 15. 10. 12.
  */
 public class BookListAdapter extends AbstractAdapter {
+
+    boolean mIsDeleteMode;
+
     public BookListAdapter(Context context) {
         super(context);
     }
@@ -29,6 +33,10 @@ public class BookListAdapter extends AbstractAdapter {
 
         ((TextView)convertView.findViewById(R.id.name_list_name)).setText((mBookList.get(position)).mName);
         ((TextView)convertView.findViewById(R.id.name_list_count)).setText("" + ((mBookList.get(position)).mTotalChapter));
+        if(mIsDeleteMode)
+            ((TextView)convertView.findViewById(R.id.name_list_name)).setTextColor(Color.RED);
+        else
+            ((TextView)convertView.findViewById(R.id.name_list_name)).setTextColor(Color.BLACK);
 
         return convertView;
     }
@@ -63,5 +71,13 @@ public class BookListAdapter extends AbstractAdapter {
     @Override
     public void onWriteCompleted() {
 
+    }
+
+    public void setDeleteMode(boolean isDeleteMode) {
+        mIsDeleteMode = isDeleteMode;
+    }
+
+    public boolean isDeleteMode() {
+        return mIsDeleteMode;
     }
 }

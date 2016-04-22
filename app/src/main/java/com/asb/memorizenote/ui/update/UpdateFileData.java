@@ -8,7 +8,7 @@ import java.io.File;
 public class UpdateFileData {
 
     public String mFileName;
-    public boolean mSelected;
+    public boolean mSelected = false;
     public File mFile;
 
 }

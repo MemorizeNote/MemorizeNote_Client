@@ -21,7 +21,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Log.e("MN", "handleMessage");
+            Log.e("MN", "handleMessage, type="+msg.what);
             switch(msg.what) {
                 case HandlerFlags.SHOW_PROGRESS:
                     mProgressDlg.setMessage((String)msg.obj);

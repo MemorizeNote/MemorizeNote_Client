@@ -158,6 +158,16 @@ public class MemorizeDBHelper extends SQLiteOpenHelper {
         return bookId;
     }
 
+    public void deleteBook(int bookId) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.delete(DB.BOOK_TABLE.NAME, DB.BOOK_TABLE.KEY_ID + "=?", new String[]{"" + bookId});
+        db.delete(DB.CHAPTER_TABLE.NAME, DB.CHAPTER_TABLE.KEY_BOOK_ID + "=?", new String[]{"" + bookId});
+        db.delete(DB.ITEM_TABLE.NAME, DB.ITEM_TABLE.KEY_BOOK_ID + "=?", new String[]{"" + bookId});
+
+        db.close();
+    }
+
     public void updateBook(int id, String name, int type, int chaptersInBook) {
         SQLiteDatabase db = getWritableDatabase();
 
