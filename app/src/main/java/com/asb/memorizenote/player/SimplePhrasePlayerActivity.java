@@ -265,6 +265,8 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
 
     @Override
     protected void onPreviousContent() {
+        mAdapter.mark();
+
         SimplePhraseData data;
 
         do {
@@ -272,6 +274,8 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
         } while(data != null && data.mDifficulty < mShowingDifficulty);
 
         if(data == null) {
+            mAdapter.recovery();
+
             showToast("처음 입니다.");
             return;
         }
@@ -282,6 +286,8 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
 
     @Override
     protected void onNextContent() {
+        mAdapter.mark();
+
         SimplePhraseData data;
 
         do {
@@ -289,6 +295,8 @@ public class SimplePhrasePlayerActivity extends BasePlayerActivity {
         } while(data != null && data.mDifficulty < mShowingDifficulty);
 
         if(data == null) {
+            mAdapter.recovery();
+
             showToast("마지막 입니다.");
             return;
         }

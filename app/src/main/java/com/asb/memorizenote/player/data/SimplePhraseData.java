@@ -53,7 +53,7 @@ public class SimplePhraseData extends BaseItemData {
         if(rawData.mRawData10 == null)
             mDifficulty = DIFFICULTY_NORMAL;
         else
-            mDifficulty = ((Integer)rawData.mRawData10);
+            mDifficulty = Integer.parseInt((String)rawData.mRawData10);
     }
 
     @Override
@@ -74,6 +74,7 @@ public class SimplePhraseData extends BaseItemData {
         values.put(Constants.DB.ITEM_TABLE.KEY_DATA_01, mPhrase);
         values.put(Constants.DB.ITEM_TABLE.KEY_DATA_02, mSpelling);
         values.put(Constants.DB.ITEM_TABLE.KEY_DATA_03, mMeaning);
+        values.put(Constants.DB.ITEM_TABLE.KEY_DATA_04, mDifficulty);
 
         return values;
     }

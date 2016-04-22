@@ -38,6 +38,12 @@ public abstract class AbstractPlayerAdapter extends AbstractAdapter {
 
     private LayoutInflater mInflater;
 
+    //for marking and recovery
+    private boolean mIsMarked = false;
+    private int mTmpCurItem;
+    private int mTmpCurChapter;
+    private int mTmpCurItemInChapter;
+
     public AbstractPlayerAdapter(Context context) {
         super(context);
 
@@ -182,6 +188,31 @@ public abstract class AbstractPlayerAdapter extends AbstractAdapter {
         }
 
         return firstItemDataInChapter;
+    }
+
+    /*
+     * 현재 adpater가 가르키는 데이터 index를 저장한다.
+     */
+    public void mark() {
+        mIsMarked = true;
+        mTmpCurItem = mCurItem;
+        mTmpCurChapter = mCurChapter;
+        mTmpCurItemInChapter = mCurItemInChapter;
+    }
+
+    /*
+     * 마지막 mark()호출 부분으로 index값을 복구한다.
+     */
+    public boolean recovery() {
+        if(!mIsMarked)
+            return false;
+
+        mIsMarked = false;
+        mCurItem = mTmpCurItem;
+        mCurChapter = mTmpCurChapter;
+        mCurItemInChapter = mTmpCurItemInChapter;
+
+        return true;
     }
 
     public int currentPosition() {

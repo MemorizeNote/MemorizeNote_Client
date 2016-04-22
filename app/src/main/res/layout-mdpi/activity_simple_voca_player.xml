@@ -22,9 +22,9 @@
             android:id="@+id/simple_voca_player_status_marking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="2dp"
-            android:text="Marking:OFF"
+            android:text="Diff:NORMAL"
             android:textColor="#FFFFFFFF"/>
 
     </LinearLayout>

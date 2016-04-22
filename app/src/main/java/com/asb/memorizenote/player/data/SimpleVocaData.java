@@ -11,10 +11,17 @@ import com.asb.memorizenote.data.RawData;
  * Created by azureskybox on 15. 10. 12.
  */
 public class SimpleVocaData extends BaseItemData {
+
+    public static final int DIFFICULTY_EASY = 0;
+    public static final int DIFFICULTY_NORMAL = 1;
+    public static final int DIFFICULTY_HARD = 2;
+    public static final int DIFFICULTY_VERY_HARD = 3;
+
     public String mWord;
     public String mMeaning;
     public boolean mMarking = false;
     public String mChapterName;
+    public int mDifficulty;
 
     public SimpleVocaData() {
         super();
@@ -23,6 +30,7 @@ public class SimpleVocaData extends BaseItemData {
         mMeaning = STRING_NULL;
         mMarking = false;
         mChapterName = STRING_NULL;
+        mDifficulty = DIFFICULTY_NORMAL;
     }
 
     @Override
@@ -42,6 +50,11 @@ public class SimpleVocaData extends BaseItemData {
         mWord = (String)rawData.mRawData07;
         mMeaning = (String)rawData.mRawData08;
         mMarking = (Integer)rawData.mRawData17 == 1?true:false;
+
+        if(rawData.mRawData09 == null)
+            mDifficulty = DIFFICULTY_NORMAL;
+        else
+            mDifficulty = Integer.parseInt((String)rawData.mRawData09);
     }
 
     @Override
@@ -77,6 +90,7 @@ public class SimpleVocaData extends BaseItemData {
 
         values.put(Constants.DB.ITEM_TABLE.KEY_DATA_01, mWord);
         values.put(Constants.DB.ITEM_TABLE.KEY_DATA_02, mMeaning);
+        values.put(Constants.DB.ITEM_TABLE.KEY_DATA_03, mDifficulty);
 
         return values;
     }

@@ -122,6 +122,10 @@ public class SimpleVocaAdapter extends AbstractPlayerAdapter {
         }
     }
 
+    public void write(SimpleVocaData data) {
+        mDBHelper.updateItem(data);
+    }
+
     @Override
     public void onReadCompleted() {
         if(mListener != null)

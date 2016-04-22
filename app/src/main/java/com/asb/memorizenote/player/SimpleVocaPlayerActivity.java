@@ -12,9 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.asb.memorizenote.Constants;
-import com.asb.memorizenote.MemorizeNoteApplication;
 import com.asb.memorizenote.R;
 import com.asb.memorizenote.player.adapter.SimpleVocaAdapter;
+import com.asb.memorizenote.player.data.SimplePhraseData;
 import com.asb.memorizenote.player.data.SimpleVocaData;
 import com.asb.memorizenote.ui.WebViewActivity;
 import com.asb.memorizenote.utils.MNLog;
@@ -29,15 +29,17 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
     TextView mWordView;
     TextView mMeaningView;
     TextView mStatusRandom;
-    TextView mStatusMarking;
+    TextView mStatusDifficulty;
 
     ArrayList<Boolean> mMeaningDismissList;
 
     SimpleVocaAdapter mAdapter;
+    SimpleVocaData mCurrentVoca;
 
     boolean mIsAllDismissed = false;
     boolean mIsRandomized = false;
-    boolean mIsShowMarking = false;
+    boolean mIsShowDifficulty = false;
+    int mShowingDifficulty = SimpleVocaData.DIFFICULTY_NORMAL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +56,8 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
         mStatusRandom = (TextView)content.findViewById(R.id.simple_voca_player_status_random);
         mStatusRandom.setTag(false);
-        mStatusMarking = (TextView)content.findViewById(R.id.simple_voca_player_status_marking);
-        mStatusMarking.setTag(false);
+        mStatusDifficulty = (TextView)content.findViewById(R.id.simple_voca_player_status_marking);
+        mStatusDifficulty.setTag(false);
 
         mAdapter = (SimpleVocaAdapter)mAbstractAdapter;
 
@@ -64,8 +66,8 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         for(int i=0; i<itemCount; i++)
             mMeaningDismissList.add(true);
 
-        SimpleVocaData data = (SimpleVocaData)mAdapter.first();
-        setWordAndMeaning(data);
+        mCurrentVoca = (SimpleVocaData)mAdapter.first();
+        setWordAndMeaning();
 
         if(mIsSmallMode) {
 
@@ -92,13 +94,6 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-        mAdapter.save();
-    }
-
-    @Override
     protected void onMenuButtonPressed() {
         showToast("** 버튼 안내 **\n"
                         + "1번 : 랜던 on/off\n"
@@ -111,7 +106,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
     protected void onBackButtonPressed() {
         //기타 설정된 값들을 초기화 한다.
         mIsAllDismissed = false;
-        mIsShowMarking = false;
+        mIsShowDifficulty = false;
         mIsRandomized = false;
 
         mAdapter.unrandomize();
@@ -121,65 +116,69 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
     @Override
     protected void onPreviousChapter() {
-        SimpleVocaData data = (SimpleVocaData)mAdapter.previousChapter();
+        mCurrentVoca = (SimpleVocaData)mAdapter.previousChapter();
 
-        if(data != null)
-            setWordAndMeaning(data);
+        if(mCurrentVoca != null)
+            setWordAndMeaning();
         else
             showToast("첫 챕터 입니다.");
     }
 
     @Override
     protected void onNextChapter() {
-        SimpleVocaData data = (SimpleVocaData)mAdapter.nextChapter();
+        mCurrentVoca = (SimpleVocaData)mAdapter.nextChapter();
 
-        if(data != null)
-            setWordAndMeaning(data);
+        if(mCurrentVoca != null)
+            setWordAndMeaning();
         else
             showToast("마지막 챕터 입니다.");
     }
 
     @Override
     protected void onPreviousContent() {
-        SimpleVocaData data = null;
-        do {
-            data = (SimpleVocaData)mAdapter.previous();
-        } while(data != null && mIsShowMarking && !data.mMarking);
+        mAdapter.mark();
 
-        if(data != null)
-            setWordAndMeaning(data);
-        else
+        do {
+            mCurrentVoca = (SimpleVocaData)mAdapter.previous();
+        } while(mCurrentVoca != null && mCurrentVoca.mDifficulty < mShowingDifficulty);
+
+        if(mCurrentVoca != null)
+            setWordAndMeaning();
+        else {
+            mAdapter.recovery();
             showToast("첫 단어 입니다.");
+        }
     }
 
     @Override
     protected void onNextContent() {
-        SimpleVocaData data = null;
-        do {
-            data = (SimpleVocaData)mAdapter.next();
-        } while(data != null && mIsShowMarking && !data.mMarking);
+        mAdapter.mark();
 
-        if(data != null)
-            setWordAndMeaning(data);
-        else
+        do {
+            mCurrentVoca = (SimpleVocaData)mAdapter.next();
+        } while(mCurrentVoca != null && mCurrentVoca.mDifficulty < mShowingDifficulty);
+
+        if(mCurrentVoca != null)
+            setWordAndMeaning();
+        else {
+            mAdapter.recovery();
             showToast("마지막 단어 입니다.");
+        }
     }
 
     @Override
     protected void onJumpToChapter(int chapter) {
         super.onJumpToChapter(chapter);
 
-        setWordAndMeaning((SimpleVocaData)mAdapter.current());
+        mCurrentVoca = (SimpleVocaData)mAdapter.current();
+        setWordAndMeaning();
     }
 
-    private void setWordAndMeaning(SimpleVocaData data) {
-        mWordView.setText(data.mWord);
-        mMeaningView.setText(data.mMeaning);
+    private void setWordAndMeaning() {
+        mWordView.setText(mCurrentVoca.mWord);
+        mMeaningView.setText(mCurrentVoca.mMeaning);
 
-        if(data.mMarking)
-            mWordView.setTextColor(Color.YELLOW);
-        else
-            mWordView.setTextColor(Color.WHITE);
+        mWordView.setTextColor(getDifficultyColor(mCurrentVoca.mDifficulty));
 
         if(mMeaningDismissList.get(mAdapter.currentPosition()))
             mMeaningView.setTextColor(Color.BLACK);
@@ -187,7 +186,22 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
             mMeaningView.setTextColor(Color.WHITE);
         }
 
-        setChapterTitle(data.mChapterName);
+        setChapterTitle(mCurrentVoca.mChapterName, mAdapter.getCurrentItemIndex(), mAdapter.getCurrentChapterSize());
+    }
+
+    private int getDifficultyColor(int difficulty) {
+        switch (difficulty) {
+            case SimplePhraseData.DIFFICULTY_EASY:
+                return Color.GRAY;
+            case SimplePhraseData.DIFFICULTY_NORMAL:
+                return Color.WHITE;
+            case SimplePhraseData.DIFFICULTY_HARD:
+                return Color.YELLOW;
+            case SimplePhraseData.DIFFICULTY_VERY_HARD:
+                return Color.RED;
+            default:
+                return Color.WHITE;
+        }
     }
 
     private void toggleMeaningVisibility() {
@@ -236,7 +250,7 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
         SimpleVocaData data = (SimpleVocaData)mAdapter.current();
         data.mMarking = isMarked;
 
-        setWordAndMeaning(data);
+        setWordAndMeaning();
     }
 
     private void toggleRandomMode() {
@@ -252,13 +266,13 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
     }
 
     private void toggleMarkingMode() {
-        if (mIsShowMarking) {
-            mStatusMarking.setText("Marking:OFF");
+        if (mIsShowDifficulty) {
+            mStatusDifficulty.setText("Marking:OFF");
         } else {
-            mStatusMarking.setText("Marking:ON");
+            mStatusDifficulty.setText("Marking:ON");
         }
 
-        mIsShowMarking = !mIsShowMarking;
+        mIsShowDifficulty = !mIsShowDifficulty;
     }
 
     private void showDictionary() {
@@ -266,6 +280,61 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
 
         Intent intent = WebViewActivity.getLaunchingIntent(this, Constants.IntentFlags.WebViewActivity.PageType.DIC, new String[]{data.mWord});
         startActivity(intent);
+    }
+
+    private void increasePhraseDifficulty() {
+        if(mCurrentVoca.mDifficulty >= SimplePhraseData.DIFFICULTY_VERY_HARD)
+            return ;
+
+        ++mCurrentVoca.mDifficulty;
+
+        mAdapter.write(mCurrentVoca);
+
+        setWordAndMeaning();
+    }
+
+    private void decreasePhraseDifficulty() {
+        if(mCurrentVoca.mDifficulty <= SimplePhraseData.DIFFICULTY_EASY)
+            return ;
+
+        --mCurrentVoca.mDifficulty;
+
+        mAdapter.write(mCurrentVoca);
+
+        setWordAndMeaning();
+    }
+
+    private void increaseDifficultyFilter() {
+        if(mShowingDifficulty >= SimpleVocaData.DIFFICULTY_VERY_HARD)
+            return ;
+
+        ++mShowingDifficulty;
+
+        mStatusDifficulty.setText("Diff:" + getDifficultyPhrase());
+    }
+
+    private void decreaseDifficultyFilter() {
+        if(mShowingDifficulty <= SimpleVocaData.DIFFICULTY_EASY)
+            return ;
+
+        --mShowingDifficulty;
+
+        mStatusDifficulty.setText("Diff:" + getDifficultyPhrase());
+    }
+
+    private String getDifficultyPhrase() {
+        switch(mShowingDifficulty) {
+            case SimpleVocaData.DIFFICULTY_EASY:
+                return "EASY";
+            case SimpleVocaData.DIFFICULTY_NORMAL:
+                return "NORMAL";
+            case SimpleVocaData.DIFFICULTY_HARD:
+                return "HARD";
+            case SimpleVocaData.DIFFICULTY_VERY_HARD:
+                return "VHARD";
+            default:
+                return "NORMAL";
+        }
     }
 
     /*
@@ -288,11 +357,17 @@ public class SimpleVocaPlayerActivity extends BasePlayerActivity {
             case KeyEvent.KEYCODE_3:
                 showDictionary();
                 break;
+            case KeyEvent.KEYCODE_7:
+                decreaseDifficultyFilter();
+                break;
+            case KeyEvent.KEYCODE_9:
+                increaseDifficultyFilter();
+                break;
             case KeyEvent.KEYCODE_DPAD_UP:
-                setWordMarking(true);
+                increasePhraseDifficulty();
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
-                setWordMarking(false);
+                decreasePhraseDifficulty();
                 break;
         }
     }
